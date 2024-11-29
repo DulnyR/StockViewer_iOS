@@ -12,12 +12,17 @@ struct TitleView: View {
         HStack {
             Spacer()
             
-            Text("StockViewer")
+            Text("Stock")
                 .font(.title)
+    
+            + Text("Viewer")
+                .font(.title)
+                .foregroundStyle(.green)
             Image(systemName: "chart.line.uptrend.xyaxis")
             
             Spacer()
         }
+        .padding()
         Divider()
         Spacer()
     }

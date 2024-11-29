@@ -16,6 +16,9 @@
 		FB11F8BF2CF89506005CD090 /* StockViewerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB11F8BE2CF89506005CD090 /* StockViewerUITests.swift */; };
 		FB11F8C12CF89506005CD090 /* StockViewerUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB11F8C02CF89506005CD090 /* StockViewerUITestsLaunchTests.swift */; };
 		FB11F8D02CF89867005CD090 /* TitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB11F8CF2CF89867005CD090 /* TitleView.swift */; };
+		FB9B4DA12CF9E3F60096266C /* CryptoListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB9B4DA02CF9E3F60096266C /* CryptoListView.swift */; };
+		FB9B4DA32CF9E4490096266C /* CryptoCurrency.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB9B4DA22CF9E4490096266C /* CryptoCurrency.swift */; };
+		FB9B4DA52CF9ED0B0096266C /* CryptoListRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB9B4DA42CF9ED0B0096266C /* CryptoListRowView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,6 +51,9 @@
 		FB11F8BE2CF89506005CD090 /* StockViewerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StockViewerUITests.swift; sourceTree = "<group>"; };
 		FB11F8C02CF89506005CD090 /* StockViewerUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StockViewerUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		FB11F8CF2CF89867005CD090 /* TitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleView.swift; sourceTree = "<group>"; };
+		FB9B4DA02CF9E3F60096266C /* CryptoListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoListView.swift; sourceTree = "<group>"; };
+		FB9B4DA22CF9E4490096266C /* CryptoCurrency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoCurrency.swift; sourceTree = "<group>"; };
+		FB9B4DA42CF9ED0B0096266C /* CryptoListRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoListRowView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,8 +106,11 @@
 			children = (
 				FB11F8A12CF89505005CD090 /* StockViewerApp.swift */,
 				FB11F8A32CF89505005CD090 /* ContentView.swift */,
+				FB9B4DA02CF9E3F60096266C /* CryptoListView.swift */,
 				FB11F8A52CF89505005CD090 /* Item.swift */,
 				FB11F8A72CF89506005CD090 /* Assets.xcassets */,
+				FB9B4DA42CF9ED0B0096266C /* CryptoListRowView.swift */,
+				FB9B4DA22CF9E4490096266C /* CryptoCurrency.swift */,
 				FB11F8A92CF89506005CD090 /* Preview Content */,
 				FB11F8CF2CF89867005CD090 /* TitleView.swift */,
 			);
@@ -264,9 +273,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				FB11F8A42CF89505005CD090 /* ContentView.swift in Sources */,
+				FB9B4DA32CF9E4490096266C /* CryptoCurrency.swift in Sources */,
 				FB11F8A62CF89505005CD090 /* Item.swift in Sources */,
 				FB11F8A22CF89505005CD090 /* StockViewerApp.swift in Sources */,
 				FB11F8D02CF89867005CD090 /* TitleView.swift in Sources */,
+				FB9B4DA12CF9E3F60096266C /* CryptoListView.swift in Sources */,
+				FB9B4DA52CF9ED0B0096266C /* CryptoListRowView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -432,11 +444,13 @@
 				DEVELOPMENT_ASSET_PATHS = "\"StockViewer/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -460,11 +474,13 @@
 				DEVELOPMENT_ASSET_PATHS = "\"StockViewer/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
