@@ -19,13 +19,17 @@ struct CryptoListView: View {
                     CryptoListRowView(crypto: currency)
                 }
                 .onDelete(perform: deleteCrypto)
-                Button(action: {
-                    addCrypto()
-                }, label: {
-                    Text("Add New")
-                })
             }
             .navigationTitle("My Coins")
+            .overlay {
+                if currencies.isEmpty {
+                    ContentUnavailableView {
+                        Label("No coins are being watched", systemImage: "doc.text.magnifyingglass")
+                    } description: {
+                        Text("Add new coins in the Explore tab below")
+                    }
+                }
+            }
             .toolbar {
                 ToolbarItem {
                     Button(action: {
@@ -39,12 +43,14 @@ struct CryptoListView: View {
         .tint(Color.green)
     }
     
+    /*
     public func addCrypto() {
         withAnimation {
             let newCrypto = CryptoCurrency(name: "Bitcoin", abbreviation: "BTC", currentPrice: 99.78)
             modelContext.insert(newCrypto)
         }
     }
+     */
 
     private func deleteCrypto(offsets: IndexSet) {
         withAnimation {

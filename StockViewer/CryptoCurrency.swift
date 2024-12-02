@@ -12,6 +12,7 @@ import SwiftData
 class CryptoCurrency {
     @Attribute var id: UUID
     @Attribute var name: String
+    @Attribute var content: String?
     @Attribute var abbreviation: String
     @Attribute var currentPrice: Double
     
@@ -20,5 +21,9 @@ class CryptoCurrency {
         self.name = name
         self.abbreviation = abbreviation
         self.currentPrice = currentPrice
+    }
+    
+    func setDescription(content : String) {
+        self.content = content
     }
 }

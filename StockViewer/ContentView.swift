@@ -15,7 +15,7 @@ struct ContentView: View {
                 .tabItem {
                     Label ("Home", systemImage: "house")
                 }
-            HomeView()
+            ExploreView()
                 .tabItem {
                     Label ("Explore", systemImage: "magnifyingglass")
                 }
@@ -29,6 +29,15 @@ struct HomeView: View {
         VStack {
             TitleView()
             CryptoListView()
+        }
+    }
+}
+
+struct ExploreView : View {
+    var body: some View {
+        VStack {
+            TitleView()
+            RecommendedListView()
         }
     }
 }
