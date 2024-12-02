@@ -9,6 +9,7 @@ import SwiftUI
 
 struct CryptoListRowView: View {
     var crypto: CryptoCurrency
+    var euro: Bool
     
     var body: some View {
         NavigationLink {
@@ -33,8 +34,13 @@ struct CryptoListRowView: View {
                     }
                 }
                 Spacer()
-                Text("€\(crypto.currentPrice, specifier: "%.2f")")
-                    .foregroundColor(.gray)
+                if(euro) {
+                    Text("€\(crypto.currentEuroPrice, specifier: "%.2f")")
+                        .foregroundColor(.gray)
+                } else {
+                    Text("$\(crypto.currentDollarPrice, specifier: "%.2f")")
+                        .foregroundColor(.gray)
+                }
             }
         }
     }

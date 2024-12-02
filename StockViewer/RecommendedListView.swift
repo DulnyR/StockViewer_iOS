@@ -10,6 +10,8 @@ import SwiftUI
 struct RecommendedListView: View {
     @State private var recommended: [CryptoCurrency] = []
     @State private var searchText = ""
+    @State private var euro = true
+    @State private var fetched = false
     
     var body: some View {
         NavigationStack {
@@ -21,7 +23,7 @@ struct RecommendedListView: View {
                 }
                 List {
                     ForEach(recommended) { currency in
-                        RecommendedRowView(crypto: currency)
+                        RecommendedRowView(crypto: currency, euro: euro)
                     }
                 }
                 .searchable(text: $searchText)
@@ -32,17 +34,20 @@ struct RecommendedListView: View {
             .toolbar {
                 ToolbarItem {
                     Button(action: {
-                        print("currency changed")
+                        euro.toggle()
                     }, label: {
-                        Text("**USD/EUR**")
+                        euro ? Text("**EUR €**") : Text("**USD $**")
                     })
                 }
             }
         }
-        .tint(Color.green)
         .onAppear {
-            fetchRecommended()
+            if (!fetched) {
+                fetchRecommended()
+            }
+            fetched = true
         }
+        .tint(Color.green)
     }
     
     func fetchRecommended() {

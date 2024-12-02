@@ -14,13 +14,15 @@ class CryptoCurrency {
     @Attribute var name: String
     @Attribute var content: String?
     @Attribute var abbreviation: String
-    @Attribute var currentPrice: Double
+    @Attribute var currentEuroPrice: Double
+    @Attribute var currentDollarPrice: Double
     
-    init(name: String, abbreviation: String, currentPrice: Double) {
+    init(name: String, abbreviation: String, currentEuroPrice: Double, currentDollarPrice: Double) {
         self.id = UUID()
         self.name = name
         self.abbreviation = abbreviation
-        self.currentPrice = currentPrice
+        self.currentEuroPrice = currentEuroPrice
+        self.currentDollarPrice = currentDollarPrice
     }
     
     func setDescription(content : String) {

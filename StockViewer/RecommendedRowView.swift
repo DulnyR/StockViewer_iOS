@@ -11,7 +11,9 @@ import SwiftData
 struct RecommendedRowView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var currencies: [CryptoCurrency]
+    @State private var clicked = false
     var crypto: CryptoCurrency
+    var euro: Bool
     
     var body: some View {
         VStack {
@@ -35,23 +37,60 @@ struct RecommendedRowView: View {
                     }
                 }
                 Spacer()
-                Text("€\(crypto.currentPrice, specifier: "%.2f")")
-                    .foregroundColor(.gray)
+                if(euro) {
+                    Text("€\(crypto.currentEuroPrice, specifier: "%.2f")")
+                        .foregroundColor(.gray)
+                } else {
+                    Text("$\(crypto.currentDollarPrice, specifier: "%.2f")")
+                        .foregroundColor(.gray)
+                }
             }
             Text(crypto.content ?? "No description available.")
             Divider()
-            Button(action: {
-                addCrypto()
-            }, label: {
-                Text("**Watch**")
-            })
+            if (!clicked) {
+                Button(action: {
+                    addCrypto()
+                }, label: {
+                    HStack {
+                        Text("**Watch**")
+                        Image(systemName: "eye.fill")
+                    }
+                })
+            } else {
+                Button(action: {
+                    deleteCrypto()
+                }, label: {
+                    HStack {
+                        Text("**Unwatch**")
+                        Image(systemName: "eye.slash")
+                    }
+                })
+                .tint(.red)
+            }
         }
     }
     
     public func addCrypto() {
+        // TEMP
+        APIService.obtainAllCoins { result in
+            switch result {
+                case .success(let coins):
+                    print("Coins:", coins)
+                    
+                case .failure(let error):
+                    print("Error:", error)
+                }
+        }
         withAnimation {
-            let newCrypto = CryptoCurrency(name: crypto.name, abbreviation: crypto.abbreviation, currentPrice: crypto.currentPrice)
-            modelContext.insert(newCrypto)
+            clicked = true
+            modelContext.insert(crypto)
+        }
+    }
+    
+    public func deleteCrypto() {
+        withAnimation {
+            clicked = false
+            modelContext.delete(crypto)
         }
     }
 }

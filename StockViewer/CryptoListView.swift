@@ -11,12 +11,13 @@ import SwiftData
 struct CryptoListView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var currencies: [CryptoCurrency]
+    @State private var euro: Bool = true
     
     var body: some View {
         NavigationStack {
             List {
                 ForEach(currencies) { currency in
-                    CryptoListRowView(crypto: currency)
+                    CryptoListRowView(crypto: currency, euro: euro)
                 }
                 .onDelete(perform: deleteCrypto)
             }
@@ -33,9 +34,9 @@ struct CryptoListView: View {
             .toolbar {
                 ToolbarItem {
                     Button(action: {
-                        print("currency changed")
+                        euro.toggle()
                     }, label: {
-                        Text("**USD/EUR**")
+                        euro ? Text("**EUR €**") : Text("**USD $**")
                     })
                 }
             }
