@@ -25,6 +25,9 @@ struct RecommendedListView: View {
                     ForEach(recommended) { currency in
                         RecommendedRowView(crypto: currency, euro: euro)
                     }
+                    ForEach(CryptoModel.getFirstTenMatches(substring: "bit"), id: \.self) { coin in
+                        Text(coin)
+                    }
                 }
                 .searchable(text: $searchText)
                 .listRowSpacing(12.0)

@@ -21,6 +21,9 @@ struct CryptoListView: View {
                 }
                 .onDelete(perform: deleteCrypto)
             }
+            .onAppear {
+                let model = CryptoModel.init()
+            }
             .navigationTitle("My Coins")
             .overlay {
                 if currencies.isEmpty {
@@ -43,15 +46,6 @@ struct CryptoListView: View {
         }
         .tint(Color.green)
     }
-    
-    /*
-    public func addCrypto() {
-        withAnimation {
-            let newCrypto = CryptoCurrency(name: "Bitcoin", abbreviation: "BTC", currentPrice: 99.78)
-            modelContext.insert(newCrypto)
-        }
-    }
-     */
 
     private func deleteCrypto(offsets: IndexSet) {
         withAnimation {

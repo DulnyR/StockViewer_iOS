@@ -9,25 +9,41 @@ import Foundation
 import SwiftData
 
 class CryptoModel {
-    private var modelContext: ModelContext
-    private var currencies: [CryptoCurrency]
+    private static var currencyIds: [String : String] = [:]
     
-    init(modelContext: ModelContext, currencies: [CryptoCurrency]) {
-            self.modelContext = modelContext
-            self.currencies = currencies
-    }
-    
-    public func addCoin(coin: CryptoCurrency) {
-        modelContext.insert(coin)
-    }
-    
-    public func deleteCoin(offsets: IndexSet) {
-        for index in offsets {
-            modelContext.delete(currencies[index])
+    init() {
+        APIService.obtainAllCoins { result in
+            switch result {
+                case .success(let coins):
+                CryptoModel.currencyIds = coins
+                    
+                case .failure(let error):
+                    print("Error:", error)
+                }
         }
     }
     
-    public func getCurrencies() -> [CryptoCurrency] {
-        return currencies
+    public static func getFirstTenMatches(substring: String) -> [String] {
+        var matches = [String]()
+        var coinArray = currencyIds.keys
+            
+        for string in coinArray {
+            if string.contains(substring) {
+                matches.append(string)
+            }
+            
+            if matches.count == 10 {
+                break
+            }
+        }
+        
+        return matches
+    }
+    
+    public static func getCoinId(name: String) -> String {
+        if let id = currencyIds[name] {
+            return id
+        }
+        return ""
     }
 }

@@ -71,16 +71,6 @@ struct RecommendedRowView: View {
     }
     
     public func addCrypto() {
-        // TEMP
-        APIService.obtainAllCoins { result in
-            switch result {
-                case .success(let coins):
-                    print("Coins:", coins)
-                    
-                case .failure(let error):
-                    print("Error:", error)
-                }
-        }
         withAnimation {
             clicked = true
             modelContext.insert(crypto)
