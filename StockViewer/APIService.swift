@@ -34,9 +34,15 @@ class APIService {
             do {
                 let decoder = JSONDecoder()
                 let coinsArray = try decoder.decode([CoinGeckoAnswer].self, from: data)
+                var seenNames: Set<String> = []
                 
-                let coins = Dictionary(uniqueKeysWithValues: coinsArray.map { coin in
-                    (coin.name, coin.id)
+                let coins = Dictionary(uniqueKeysWithValues: coinsArray.compactMap { coin in
+                    if !seenNames.contains(coin.name) {
+                        seenNames.insert(coin.name)
+                        return (coin.name, coin.id)
+                    } else {
+                        return nil // Skip duplicates
+                    }
                 })
                 completion(.success(coins))
             } catch {

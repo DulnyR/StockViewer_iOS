@@ -25,15 +25,27 @@ class CryptoModel {
     
     public static func getFirstTenMatches(substring: String) -> [String] {
         var matches = [String]()
-        var coinArray = currencyIds.keys
-            
+        let coinArray = currencyIds.keys
+        
         for string in coinArray {
-            if string.contains(substring) {
+            if string.hasPrefix(substring) {
                 matches.append(string)
             }
             
             if matches.count == 10 {
                 break
+            }
+        }
+        
+        if matches.count < 10 {
+            for string in coinArray {
+                if string.contains(substring) && !matches.contains(string) {
+                    matches.append(string)
+                }
+
+                if matches.count == 10 {
+                    break
+                }
             }
         }
         
