@@ -22,7 +22,7 @@ struct CryptoListView: View {
                 .onDelete(perform: deleteCrypto)
             }
             .onAppear {
-                let model = CryptoModel.init()
+                CryptoModel.loadCoins()
             }
             .navigationTitle("My Coins")
             .overlay {

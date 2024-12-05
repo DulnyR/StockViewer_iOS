@@ -30,7 +30,7 @@ struct RecommendedRowView: View {
                         Spacer()
                     }
                     HStack {
-                        Text(crypto.abbreviation)
+                        Text(crypto.symbol)
                             .font(.subheadline)
                             .foregroundStyle(.gray)
                         Spacer()

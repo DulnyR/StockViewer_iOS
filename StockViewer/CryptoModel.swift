@@ -9,13 +9,13 @@ import Foundation
 import SwiftData
 
 class CryptoModel {
-    private static var currencyIds: [String : String] = [:]
+    private static var coins: [String : CryptoCurrency] = [:]
     
-    init() {
-        APIService.obtainAllCoins { result in
+    public static func loadCoins() {
+        APIService.getAllCoins { result in
             switch result {
                 case .success(let coins):
-                CryptoModel.currencyIds = coins
+                CryptoModel.coins = coins
                     
                 case .failure(let error):
                     print("Error:", error)
@@ -24,8 +24,11 @@ class CryptoModel {
     }
     
     public static func getFirstTenMatches(substring: String) -> [String] {
+        if coins.isEmpty {
+            loadCoins()
+        }
         var matches = [String]()
-        let coinArray = currencyIds.keys
+        let coinArray = coins.keys
         
         for string in coinArray {
             if string.hasPrefix(substring) {
@@ -52,10 +55,13 @@ class CryptoModel {
         return matches
     }
     
-    public static func getCoinId(name: String) -> String {
-        if let id = currencyIds[name] {
-            return id
+    public static func getCoin(name: String) -> CryptoCurrency {
+        if coins.isEmpty {
+            loadCoins()
         }
-        return ""
+        if let coin = coins[name] {
+            return coin
+        }
+        return CryptoCurrency(name: name, APIid: "Unknown", symbol: "Unknown")
     }
 }

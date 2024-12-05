@@ -20,17 +20,17 @@ struct Recommended {
     
     //price hardcoded
     init() {
-        bitcoin = CryptoCurrency(name: "Bitcoin", abbreviation: "BTC", currentEuroPrice: 97.78, currentDollarPrice: 127.85)
+        bitcoin = CryptoModel.getCoin(name: "Bitcoin")
         bitcoin.setDescription(content: bitcoinDescription)
         
         self.recommended = [bitcoin]
         
-        ethereum = CryptoCurrency(name: "Ethereum", abbreviation: "ETH", currentEuroPrice: 54.68, currentDollarPrice: 57.98)
+        ethereum = CryptoModel.getCoin(name: "Ethereum")
         ethereum.setDescription(content: ethereumDescription)
         
         self.recommended.append(ethereum)
         
-        solana = CryptoCurrency(name: "Solana", abbreviation: "SOL", currentEuroPrice: 15.24, currentDollarPrice: 21.59)
+        solana = CryptoModel.getCoin(name: "Solana")
         solana.setDescription(content: solanaDescription)
         
         self.recommended.append(solana)
