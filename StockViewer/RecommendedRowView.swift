@@ -38,10 +38,10 @@ struct RecommendedRowView: View {
                 }
                 Spacer()
                 if(euro) {
-                    Text("€\(crypto.currentEuroPrice, specifier: "%.2f")")
+                    Text("€\(crypto.eurPrice, specifier: "%.2f")")
                         .foregroundColor(.gray)
                 } else {
-                    Text("$\(crypto.currentDollarPrice, specifier: "%.2f")")
+                    Text("$\(crypto.usdPrice, specifier: "%.2f")")
                         .foregroundColor(.gray)
                 }
             }

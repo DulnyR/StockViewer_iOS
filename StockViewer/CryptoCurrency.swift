@@ -26,8 +26,25 @@ class CryptoCurrency {
     }
 
     func updatePrices() {
-        self.eurPrice = APIService.getPrice(currency: self.APIid, currency: "EUR")
-        self.usdPrice = APIService.getPrice(currency: self.APIid, currency: "USD")
+        APIService.getPrice(currency: self.APIid, currency: "EUR") { result in
+            switch result {
+                case .success(let price):
+                self.eurPrice = price
+                    
+                case .failure(let error):
+                    print("Error:", error)
+                }
+        }
+
+        APIService.getPrice(currency: self.APIid, currency: "USD") { result in
+            switch result {
+                case .success(let price):
+                self.usdPrice = price
+                    
+                case .failure(let error):
+                    print("Error:", error)
+                }
+        }
     }
     
     func setDescription(content : String) {
