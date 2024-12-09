@@ -54,8 +54,8 @@ class APIService {
         task.resume() 
     }
     
-    public static func getPrice(coinId: String, currency: String, completion: @escaping (Result<CoinPrice, Error>) -> Void) {
-        let urlString = baseURL + "simple/price?ids=" + coinId + "&vs_currencies=" + currency + "&" + apiKey
+    public static func getUSDPrice(coinId: String, completion: @escaping (Result<CoinUSDPrice, Error>) -> Void) {
+        let urlString = baseURL + "simple/price?ids=" + coinId + "&vs_currencies=usd&" + apiKey
         
         guard let url = URL(string: urlString) else {
             completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"])))
@@ -75,7 +75,44 @@ class APIService {
             
             do {
                 // Decode the response into a dictionary where the key is the coinId
-                let decodedData = try JSONDecoder().decode([String: CoinPrice].self, from: data)
+                let decodedData = try JSONDecoder().decode([String: CoinUSDPrice].self, from: data)
+                
+                // Check if the coinId exists in the decoded data
+                if let coinData = decodedData[coinId] {
+                    completion(.success(coinData))  // Return the CoinPrice for the requested coinId
+                } else {
+                    completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Coin not found"])))
+                }
+            } catch {
+                completion(.failure(error))
+            }
+        }
+        
+        task.resume()
+    }
+    
+    public static func getEURPrice(coinId: String, completion: @escaping (Result<CoinEURPrice, Error>) -> Void) {
+        let urlString = baseURL + "simple/price?ids=" + coinId + "&vs_currencies=eur&" + apiKey
+        
+        guard let url = URL(string: urlString) else {
+            completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"])))
+            return
+        }
+        
+        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            
+            guard let data = data else {
+                completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Data not received"])))
+                return
+            }
+            
+            do {
+                // Decode the response into a dictionary where the key is the coinId
+                let decodedData = try JSONDecoder().decode([String: CoinEURPrice].self, from: data)
                 
                 // Check if the coinId exists in the decoded data
                 if let coinData = decodedData[coinId] {
@@ -91,6 +128,7 @@ class APIService {
         task.resume()
     }
 
+
  }
 
 struct CoinGeckoCoin: Codable {
@@ -99,20 +137,12 @@ struct CoinGeckoCoin: Codable {
     let name: String
 }
 
-struct CoinPrice: Decodable {
+struct CoinUSDPrice: Decodable {
     let usd: Double
-    let usdMarketCap: Double
-    let usd24hVol: Double
-    let usd24hChange: Double
-    let lastUpdatedAt: Int
-    
-    enum CodingKeys: String, CodingKey {
-        case usd
-        case usdMarketCap = "usd_market_cap"
-        case usd24hVol = "usd_24h_vol"
-        case usd24hChange = "usd_24h_change"
-        case lastUpdatedAt = "last_updated_at"
-    }
+}
+
+struct CoinEURPrice: Decodable {
+    let eur: Double
 }
 
 

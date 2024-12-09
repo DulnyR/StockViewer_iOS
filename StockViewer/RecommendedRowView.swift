@@ -11,7 +11,6 @@ import SwiftData
 struct RecommendedRowView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var currencies: [CryptoCurrency]
-    @State private var clicked = false
     var crypto: CryptoCurrency
     var euro: Bool
     
@@ -36,18 +35,21 @@ struct RecommendedRowView: View {
                         Spacer()
                     }
                 }
+                .onAppear {
+                    crypto.updatePrices()
+                }
                 Spacer()
                 if(euro) {
-                    Text("€\(crypto.eurPrice, specifier: "%.2f")")
+                    Text("€\(crypto.eurPrice ?? 0.00, specifier: "%.2f")")
                         .foregroundColor(.gray)
                 } else {
-                    Text("$\(crypto.usdPrice, specifier: "%.2f")")
+                    Text("$\(crypto.usdPrice ?? 0.00, specifier: "%.2f")")
                         .foregroundColor(.gray)
                 }
             }
             Text(crypto.content ?? "No description available.")
             Divider()
-            if (!clicked) {
+            if (!currencies.contains(where: { $0.APIid == crypto.APIid })) {
                 Button(action: {
                     addCrypto()
                 }, label: {
@@ -58,7 +60,7 @@ struct RecommendedRowView: View {
                 })
             } else {
                 Button(action: {
-                    deleteCrypto()
+                    deleteCrypto(crypto: crypto)
                 }, label: {
                     HStack {
                         Text("**Unwatch**")
@@ -70,19 +72,17 @@ struct RecommendedRowView: View {
         }
     }
     
-    public func addCrypto() {
+    func addCrypto() {
         withAnimation {
-            clicked = true
-            crypto.updatePrices()
             modelContext.insert(crypto)
         }
     }
     
-    public func deleteCrypto() {
-        withAnimation {
-            clicked = false
-            crypto.updatePrices()
-            modelContext.delete(crypto)
+    func deleteCrypto(crypto: CryptoCurrency) {
+        if let existingCrypto = currencies.first(where: { $0.APIid == crypto.APIid }) {
+            withAnimation {
+                modelContext.delete(existingCrypto)
+            }
         }
     }
 }

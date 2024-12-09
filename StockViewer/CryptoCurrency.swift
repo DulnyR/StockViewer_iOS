@@ -15,8 +15,9 @@ class CryptoCurrency {
     @Attribute var APIid: String
     @Attribute var content: String?
     @Attribute var symbol: String
-    @Attribute var eurPrice: Double?
-    @Attribute var usdPrice: Double?
+    var eurPrice: Double?
+    var usdPrice: Double?
+    
     
     init(name: String, APIid: String, symbol: String) {
         self.id = UUID()
@@ -26,20 +27,24 @@ class CryptoCurrency {
     }
 
     func updatePrices() {
-        APIService.getPrice(currency: self.APIid, currency: "EUR") { result in
+        APIService.getEURPrice(coinId: self.APIid) { result in
             switch result {
                 case .success(let price):
-                self.eurPrice = price
+                DispatchQueue.main.async {
+                    self.eurPrice = price.eur
+                }
                     
                 case .failure(let error):
                     print("Error:", error)
                 }
         }
 
-        APIService.getPrice(currency: self.APIid, currency: "USD") { result in
+        APIService.getUSDPrice(coinId: self.APIid) { result in
             switch result {
                 case .success(let price):
-                self.usdPrice = price
+                DispatchQueue.main.async {
+                    self.usdPrice = price.usd
+                }
                     
                 case .failure(let error):
                     print("Error:", error)

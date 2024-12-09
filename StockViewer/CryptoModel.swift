@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 class CryptoModel {
-    private static var coins: [String : CryptoCurrency] = [:]
+    public static var coins: [String : CryptoCurrency] = [:]
     
     public static func loadCoins() {
         APIService.getAllCoins { result in
@@ -23,16 +23,20 @@ class CryptoModel {
         }
     }
     
-    public static func getFirstTenMatches(substring: String) -> [String] {
+    public static func getFirstTenMatches(substring: String) -> [CryptoCurrency] {
         if coins.isEmpty {
             loadCoins()
         }
-        var matches = [String]()
+        let substring = substring.lowercased().replacingOccurrences(of: " ", with: "-")
+        var matches = [CryptoCurrency]()
+        var foundStrings = Set<String>()
         let coinArray = coins.keys
         
         for string in coinArray {
+            let string = string.lowercased()
             if string.hasPrefix(substring) {
-                matches.append(string)
+                matches.append(coins[string]!)
+                foundStrings.insert(string)
             }
             
             if matches.count == 10 {
@@ -42,8 +46,9 @@ class CryptoModel {
         
         if matches.count < 10 {
             for string in coinArray {
-                if string.contains(substring) && !matches.contains(string) {
-                    matches.append(string)
+                let string = string.lowercased()
+                if string.contains(substring) && !foundStrings.contains(string) {
+                    matches.append(coins[string]!)
                 }
 
                 if matches.count == 10 {

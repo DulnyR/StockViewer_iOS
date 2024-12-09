@@ -17,12 +17,17 @@ struct CryptoListView: View {
         NavigationStack {
             List {
                 ForEach(currencies) { currency in
-                    CryptoListRowView(crypto: currency, euro: euro)
+                    CryptoListRowView(crypto: currency, euro: euro, showPrice: true)
                 }
                 .onDelete(perform: deleteCrypto)
             }
             .onAppear {
-                CryptoModel.loadCoins()
+                DispatchQueue.main.async {
+                    CryptoModel.loadCoins()
+                    for currency in currencies {
+                        currency.updatePrices()
+                    }
+                }
             }
             .navigationTitle("My Coins")
             .overlay {

@@ -10,6 +10,8 @@ import SwiftUI
 struct CryptoListRowView: View {
     var crypto: CryptoCurrency
     var euro: Bool
+    // Save API Calls
+    var showPrice: Bool
     
     var body: some View {
         NavigationLink {
@@ -34,12 +36,14 @@ struct CryptoListRowView: View {
                     }
                 }
                 Spacer()
-                if(euro) {
-                    Text("€\(crypto.eurPrice, specifier: "%.2f")")
-                        .foregroundColor(.gray)
-                } else {
-                    Text("$\(crypto.usdPrice, specifier: "%.2f")")
-                        .foregroundColor(.gray)
+                if (showPrice) {
+                    if(euro) {
+                        Text("€\(crypto.eurPrice ?? 0.00, specifier: "%.2f")")
+                            .foregroundColor(.gray)
+                    } else {
+                        Text("$\(crypto.usdPrice ?? 0.00, specifier: "%.2f")")
+                            .foregroundColor(.gray)
+                    }
                 }
             }
         }

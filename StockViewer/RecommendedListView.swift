@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct RecommendedListView: View {
     @State private var recommended: [CryptoCurrency] = []
@@ -16,23 +17,37 @@ struct RecommendedListView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                HStack {
-                    Text("Top Coins")
-                        .font(.headline)
-                    Image(systemName: "star.fill")
-                }
-                List {
-                    ForEach(recommended) { currency in
-                        RecommendedRowView(crypto: currency, euro: euro)
+                if !searchText.isEmpty {
+                    let matches = CryptoModel.getFirstTenMatches(substring: searchText)
+                    
+                    if matches.isEmpty {
+                        Text("No matches found for '\(searchText)'")
+                            .foregroundColor(.gray)
+                            .italic()
+                            .padding()
+                    } else {
+                        List {
+                            ForEach(matches, id: \.self) { coin in
+                                CryptoListRowView(crypto: coin, euro: true, showPrice: false)
+                            }
+                        }
                     }
-                    ForEach(CryptoModel.getFirstTenMatches(substring: "bit"), id: \.self) { coin in
-                        Text(coin)
+                } else {
+                    HStack {
+                        Text("Top Coins")
+                            .font(.headline)
+                        Image(systemName: "star.fill")
                     }
+                    List {
+                        ForEach(recommended) { currency in
+                            RecommendedRowView(crypto: currency, euro: euro)
+                        }
+                    }
+                    .listRowSpacing(12.0)
+                    .contentMargins(.top, 6)
                 }
-                .searchable(text: $searchText)
-                .listRowSpacing(12.0)
-                .contentMargins(.top, 6)
             }
+            .searchable(text: $searchText)
             .navigationTitle("Explore")
             .toolbar {
                 ToolbarItem {
