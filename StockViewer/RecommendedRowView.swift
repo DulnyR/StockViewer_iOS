@@ -73,6 +73,7 @@ struct RecommendedRowView: View {
     public func addCrypto() {
         withAnimation {
             clicked = true
+            crypto.updatePrices()
             modelContext.insert(crypto)
         }
     }
@@ -80,6 +81,7 @@ struct RecommendedRowView: View {
     public func deleteCrypto() {
         withAnimation {
             clicked = false
+            crypto.updatePrices()
             modelContext.delete(crypto)
         }
     }

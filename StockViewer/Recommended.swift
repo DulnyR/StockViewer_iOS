@@ -18,20 +18,22 @@ struct Recommended {
     var ethereum: CryptoCurrency
     var solana: CryptoCurrency
     
-    //price hardcoded
     init() {
         bitcoin = CryptoModel.getCoin(name: "Bitcoin")
         bitcoin.setDescription(content: bitcoinDescription)
+        bitcoin.updatePrices()
         
         self.recommended = [bitcoin]
         
         ethereum = CryptoModel.getCoin(name: "Ethereum")
         ethereum.setDescription(content: ethereumDescription)
+        ethereum.updatePrices()
         
         self.recommended.append(ethereum)
         
         solana = CryptoModel.getCoin(name: "Solana")
         solana.setDescription(content: solanaDescription)
+        solana.updatePrices()
         
         self.recommended.append(solana)
     }
