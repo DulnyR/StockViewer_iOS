@@ -12,15 +12,44 @@ import SwiftData
 class CryptoCurrency {
     @Attribute var id: UUID
     @Attribute var name: String
+    @Attribute var APIid: String
     @Attribute var content: String?
-    @Attribute var abbreviation: String
-    @Attribute var currentPrice: Double
+    @Attribute var symbol: String
+    var eurPrice: Double?
+    var usdPrice: Double?
     
-    init(name: String, abbreviation: String, currentPrice: Double) {
+    
+    init(name: String, APIid: String, symbol: String) {
         self.id = UUID()
         self.name = name
-        self.abbreviation = abbreviation
-        self.currentPrice = currentPrice
+        self.APIid = APIid
+        self.symbol = symbol
+    }
+
+    func updatePrices() {
+        APIService.getEURPrice(coinId: self.APIid) { result in
+            switch result {
+                case .success(let price):
+                DispatchQueue.main.async {
+                    self.eurPrice = price.eur
+                }
+                    
+                case .failure(let error):
+                    print("Error:", error)
+                }
+        }
+
+        APIService.getUSDPrice(coinId: self.APIid) { result in
+            switch result {
+                case .success(let price):
+                DispatchQueue.main.async {
+                    self.usdPrice = price.usd
+                }
+                    
+                case .failure(let error):
+                    print("Error:", error)
+                }
+        }
     }
     
     func setDescription(content : String) {

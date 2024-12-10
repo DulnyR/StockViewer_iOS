@@ -9,10 +9,13 @@ import SwiftUI
 
 struct CryptoListRowView: View {
     var crypto: CryptoCurrency
+    var euro: Bool
+    // Save API Calls
+    var showPrice: Bool
     
     var body: some View {
         NavigationLink {
-            Text("Details for \(crypto.name)")
+            CryptoDetailView(crypto: crypto)
         } label: {
             HStack {
                 Image(systemName: "bitcoinsign.circle")
@@ -26,15 +29,22 @@ struct CryptoListRowView: View {
                         Spacer()
                     }
                     HStack {
-                        Text(crypto.abbreviation)
+                        Text(crypto.symbol)
                             .font(.subheadline)
                             .foregroundStyle(.gray)
                         Spacer()
                     }
                 }
                 Spacer()
-                Text("€\(crypto.currentPrice, specifier: "%.2f")")
-                    .foregroundColor(.gray)
+                if (showPrice) {
+                    if(euro) {
+                        Text("€\(crypto.eurPrice ?? 0.00, specifier: "%.2f")")
+                            .foregroundColor(.gray)
+                    } else {
+                        Text("$\(crypto.usdPrice ?? 0.00, specifier: "%.2f")")
+                            .foregroundColor(.gray)
+                    }
+                }
             }
         }
     }

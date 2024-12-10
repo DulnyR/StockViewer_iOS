@@ -6,43 +6,66 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct RecommendedListView: View {
     @State private var recommended: [CryptoCurrency] = []
     @State private var searchText = ""
+    @State private var euro = true
+    @State private var fetched = false
     
     var body: some View {
         NavigationStack {
             VStack {
-                HStack {
-                    Text("Top Coins")
-                        .font(.headline)
-                    Image(systemName: "star.fill")
-                }
-                List {
-                    ForEach(recommended) { currency in
-                        RecommendedRowView(crypto: currency)
+                if !searchText.isEmpty {
+                    let matches = CryptoModel.getFirstTenMatches(substring: searchText)
+                    
+                    if matches.isEmpty {
+                        Text("No matches found for '\(searchText)'")
+                            .foregroundColor(.gray)
+                            .italic()
+                            .padding()
+                    } else {
+                        List {
+                            ForEach(matches, id: \.self) { coin in
+                                CryptoListRowView(crypto: coin, euro: true, showPrice: false)
+                            }
+                        }
                     }
+                } else {
+                    HStack {
+                        Text("Top Coins")
+                            .font(.headline)
+                        Image(systemName: "star.fill")
+                    }
+                    List {
+                        ForEach(recommended) { currency in
+                            RecommendedRowView(crypto: currency, euro: euro)
+                        }
+                    }
+                    .listRowSpacing(12.0)
+                    .contentMargins(.top, 6)
                 }
-                .searchable(text: $searchText)
-                .listRowSpacing(12.0)
-                .contentMargins(.top, 6)
             }
+            .searchable(text: $searchText)
             .navigationTitle("Explore")
             .toolbar {
                 ToolbarItem {
                     Button(action: {
-                        print("currency changed")
+                        euro.toggle()
                     }, label: {
-                        Text("**USD/EUR**")
+                        euro ? Text("**EUR €**") : Text("**USD $**")
                     })
                 }
             }
         }
-        .tint(Color.green)
         .onAppear {
-            fetchRecommended()
+            if (!fetched) {
+                fetchRecommended()
+            }
+            fetched = true
         }
+        .tint(Color.green)
     }
     
     func fetchRecommended() {

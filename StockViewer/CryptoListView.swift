@@ -11,14 +11,23 @@ import SwiftData
 struct CryptoListView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var currencies: [CryptoCurrency]
+    @State private var euro: Bool = true
     
     var body: some View {
         NavigationStack {
             List {
                 ForEach(currencies) { currency in
-                    CryptoListRowView(crypto: currency)
+                    CryptoListRowView(crypto: currency, euro: euro, showPrice: true)
                 }
                 .onDelete(perform: deleteCrypto)
+            }
+            .onAppear {
+                DispatchQueue.main.async {
+                    CryptoModel.loadCoins()
+                    for currency in currencies {
+                        currency.updatePrices()
+                    }
+                }
             }
             .navigationTitle("My Coins")
             .overlay {
@@ -33,24 +42,15 @@ struct CryptoListView: View {
             .toolbar {
                 ToolbarItem {
                     Button(action: {
-                        print("currency changed")
+                        euro.toggle()
                     }, label: {
-                        Text("**USD/EUR**")
+                        euro ? Text("**EUR €**") : Text("**USD $**")
                     })
                 }
             }
         }
         .tint(Color.green)
     }
-    
-    /*
-    public func addCrypto() {
-        withAnimation {
-            let newCrypto = CryptoCurrency(name: "Bitcoin", abbreviation: "BTC", currentPrice: 99.78)
-            modelContext.insert(newCrypto)
-        }
-    }
-     */
 
     private func deleteCrypto(offsets: IndexSet) {
         withAnimation {

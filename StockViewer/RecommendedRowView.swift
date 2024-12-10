@@ -12,6 +12,7 @@ struct RecommendedRowView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var currencies: [CryptoCurrency]
     var crypto: CryptoCurrency
+    var euro: Bool
     
     var body: some View {
         VStack {
@@ -28,30 +29,60 @@ struct RecommendedRowView: View {
                         Spacer()
                     }
                     HStack {
-                        Text(crypto.abbreviation)
+                        Text(crypto.symbol)
                             .font(.subheadline)
                             .foregroundStyle(.gray)
                         Spacer()
                     }
                 }
+                .onAppear {
+                    crypto.updatePrices()
+                }
                 Spacer()
-                Text("€\(crypto.currentPrice, specifier: "%.2f")")
-                    .foregroundColor(.gray)
+                if(euro) {
+                    Text("€\(crypto.eurPrice ?? 0.00, specifier: "%.2f")")
+                        .foregroundColor(.gray)
+                } else {
+                    Text("$\(crypto.usdPrice ?? 0.00, specifier: "%.2f")")
+                        .foregroundColor(.gray)
+                }
             }
             Text(crypto.content ?? "No description available.")
             Divider()
-            Button(action: {
-                addCrypto()
-            }, label: {
-                Text("**Watch**")
-            })
+            if (!currencies.contains(where: { $0.APIid == crypto.APIid })) {
+                Button(action: {
+                    addCrypto()
+                }, label: {
+                    HStack {
+                        Text("**Watch**")
+                        Image(systemName: "eye.fill")
+                    }
+                })
+            } else {
+                Button(action: {
+                    deleteCrypto(crypto: crypto)
+                }, label: {
+                    HStack {
+                        Text("**Unwatch**")
+                        Image(systemName: "eye.slash")
+                    }
+                })
+                .tint(.red)
+            }
         }
     }
     
-    public func addCrypto() {
+    func addCrypto() {
         withAnimation {
-            let newCrypto = CryptoCurrency(name: crypto.name, abbreviation: crypto.abbreviation, currentPrice: crypto.currentPrice)
-            modelContext.insert(newCrypto)
+            modelContext.insert(crypto)
+        }
+    }
+    
+    func deleteCrypto(crypto: CryptoCurrency) {
+        if let existingCrypto = currencies.first(where: { $0.APIid == crypto.APIid }) {
+            withAnimation {
+                modelContext.delete(existingCrypto)
+            }
         }
     }
 }
