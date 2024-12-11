@@ -9,10 +9,8 @@ import SwiftUI
 import SwiftData
 
 struct RecommendedRowView: View {
-    @Environment(\.modelContext) private var modelContext
-    @Query private var currencies: [CryptoCurrency]
     var crypto: CryptoCurrency
-    var euro: Bool
+    @State var euro: Bool
     
     var body: some View {
         VStack {
@@ -49,40 +47,7 @@ struct RecommendedRowView: View {
             }
             Text(crypto.content ?? "No description available.")
             Divider()
-            if (!currencies.contains(where: { $0.APIid == crypto.APIid })) {
-                Button(action: {
-                    addCrypto()
-                }, label: {
-                    HStack {
-                        Text("**Watch**")
-                        Image(systemName: "eye.fill")
-                    }
-                })
-            } else {
-                Button(action: {
-                    deleteCrypto(crypto: crypto)
-                }, label: {
-                    HStack {
-                        Text("**Unwatch**")
-                        Image(systemName: "eye.slash")
-                    }
-                })
-                .tint(.red)
-            }
-        }
-    }
-    
-    func addCrypto() {
-        withAnimation {
-            modelContext.insert(crypto)
-        }
-    }
-    
-    func deleteCrypto(crypto: CryptoCurrency) {
-        if let existingCrypto = currencies.first(where: { $0.APIid == crypto.APIid }) {
-            withAnimation {
-                modelContext.delete(existingCrypto)
-            }
+            WatchButton(crypto: crypto)
         }
     }
 }

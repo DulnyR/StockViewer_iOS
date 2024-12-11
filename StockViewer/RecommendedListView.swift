@@ -11,8 +11,8 @@ import SwiftData
 struct RecommendedListView: View {
     @State private var recommended: [CryptoCurrency] = []
     @State private var searchText = ""
-    @State private var euro = true
     @State private var fetched = false
+    @State private var euro = true
     
     var body: some View {
         NavigationStack {
@@ -28,7 +28,7 @@ struct RecommendedListView: View {
                     } else {
                         List {
                             ForEach(matches, id: \.self) { coin in
-                                CryptoListRowView(crypto: coin, euro: true, showPrice: false)
+                                CryptoListRowView(crypto: coin, euro: euro, showPrice: false)
                             }
                         }
                     }
@@ -51,15 +51,12 @@ struct RecommendedListView: View {
             .navigationTitle("Explore")
             .toolbar {
                 ToolbarItem {
-                    Button(action: {
-                        euro.toggle()
-                    }, label: {
-                        euro ? Text("**EUR €**") : Text("**USD $**")
-                    })
+                    EuroToggle(euro: $euro)
                 }
             }
         }
         .onAppear {
+            euro = CryptoModel.isEuro()
             if (!fetched) {
                 fetchRecommended()
             }

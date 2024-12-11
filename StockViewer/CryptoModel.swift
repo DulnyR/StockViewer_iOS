@@ -69,4 +69,8 @@ class CryptoModel {
         }
         return CryptoCurrency(name: name, APIid: "Unknown", symbol: "Unknown")
     }
+    
+    public static func isEuro() -> Bool {
+        return UserDefaults.standard.bool(forKey: "euro")
+    }
 }

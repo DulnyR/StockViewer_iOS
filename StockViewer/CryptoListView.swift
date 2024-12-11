@@ -22,6 +22,7 @@ struct CryptoListView: View {
                 .onDelete(perform: deleteCrypto)
             }
             .onAppear {
+                euro = CryptoModel.isEuro()
                 DispatchQueue.main.async {
                     CryptoModel.loadCoins()
                     for currency in currencies {
@@ -41,11 +42,7 @@ struct CryptoListView: View {
             }
             .toolbar {
                 ToolbarItem {
-                    Button(action: {
-                        euro.toggle()
-                    }, label: {
-                        euro ? Text("**EUR €**") : Text("**USD $**")
-                    })
+                    EuroToggle(euro: $euro)
                 }
             }
         }

@@ -10,7 +10,6 @@ import SwiftUI
 struct CryptoListRowView: View {
     var crypto: CryptoCurrency
     var euro: Bool
-    // Save API Calls
     var showPrice: Bool
     
     var body: some View {
