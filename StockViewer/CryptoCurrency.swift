@@ -17,6 +17,7 @@ class CryptoCurrency {
     @Attribute var symbol: String
     var eurPrice: Double?
     var usdPrice: Double?
+    var image: URL?
     
     
     init(name: String, APIid: String, symbol: String) {
@@ -26,7 +27,7 @@ class CryptoCurrency {
         self.symbol = symbol
     }
 
-    func updatePrices() {
+    func updateDetails() {
         APIService.getEURPrice(coinId: self.APIid) { result in
             switch result {
                 case .success(let price):
@@ -49,6 +50,20 @@ class CryptoCurrency {
                 case .failure(let error):
                     print("Error:", error)
                 }
+        }
+        
+        APIService.getDetails(coinId: self.APIid) { result in
+            switch result {
+                case .success (let data):
+                DispatchQueue.main.async {
+                    self.eurPrice = data.market_data.current_price["eur"]
+                    self.usdPrice = data.market_data.current_price["usd"]
+                    self.image = data.image
+                }
+                
+                case .failure(let error):
+                    print("Error:", error)
+            }
         }
     }
     

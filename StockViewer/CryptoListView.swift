@@ -17,7 +17,7 @@ struct CryptoListView: View {
         NavigationStack {
             List {
                 ForEach(currencies) { currency in
-                    CryptoListRowView(crypto: currency, euro: euro, showPrice: true)
+                    CryptoListRowView(crypto: currency, euro: euro)
                 }
                 .onDelete(perform: deleteCrypto)
             }
@@ -26,7 +26,7 @@ struct CryptoListView: View {
                 DispatchQueue.main.async {
                     CryptoModel.loadCoins()
                     for currency in currencies {
-                        currency.updatePrices()
+                        currency.updateDetails()
                     }
                 }
             }

@@ -28,7 +28,7 @@ struct RecommendedListView: View {
                     } else {
                         List {
                             ForEach(matches, id: \.self) { coin in
-                                CryptoListRowView(crypto: coin, euro: euro, showPrice: false)
+                                CryptoListRowView(crypto: coin, euro: euro)
                             }
                         }
                     }

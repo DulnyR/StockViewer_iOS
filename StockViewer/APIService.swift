@@ -128,6 +128,37 @@ class APIService {
         task.resume()
     }
     
+    public static func getDetails(coinId: String, completion: @escaping (Result<CoinData, Error>) -> Void) {
+        let urlString = baseURL + "coins/" + coinId + "?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false&" + apiKey
+        
+        guard let url = URL(string: urlString) else {
+            completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"])))
+            return
+        }
+        
+        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            
+            guard let data = data else {
+                completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Data not received"])))
+                return
+            }
+            
+            do {
+                let decodedData = try JSONDecoder().decode(CoinData.self, from: data)
+                
+                completion(.success(decodedData))
+            } catch {
+                completion(.failure(error))
+            }
+        }
+        
+        task.resume()
+    }
+    
     public static func getHistoricalPrices(coinId: String, currency: String, days: Int, completion: @escaping (Result<[Price], Error>) -> Void) {
         var components = URLComponents(string: baseURL + "coins/\(coinId)/market_chart")!
         components.queryItems = [
@@ -190,6 +221,22 @@ struct HistoricalPrices: Decodable {
 struct Price: Decodable {
     let timestamp: Int
     let value: Double
+}
+
+struct CoinData: Codable {
+    //let image: URL
+    let market_data: MarketData
+}
+
+struct Image: Codable {
+    let small: String
+}
+
+struct MarketData: Codable {
+    let current_price: [String: Double]
+    let market_cap_rank: Int
+    let market_cap: [String: Double]
+    let total_volume: [String: Double]
 }
 
 

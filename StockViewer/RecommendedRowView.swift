@@ -10,7 +10,7 @@ import SwiftData
 
 struct RecommendedRowView: View {
     var crypto: CryptoCurrency
-    @State var euro: Bool
+    var euro: Bool
     
     var body: some View {
         VStack {
