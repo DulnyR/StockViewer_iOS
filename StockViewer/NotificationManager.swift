@@ -7,9 +7,10 @@
 
 import Foundation
 import UserNotifications
+import BackgroundTasks
 
-// Alert check every minute
-let timeInterval = 60
+let priceMonitoringTaskIdentifier = "com.example.priceMonitoring"
+let percentageMonitoringTaskIdentifier = "com.example.percentageMonitoring"
 
 class NotificationManager {
     static let shared = NotificationManager()
@@ -73,17 +74,95 @@ class NotificationManager {
         }
     }
     
-    func startMonitoringPrice(crypto: CryptoCurrency, price: Double) {
+    func startMonitoringPrice(crypto: CryptoCurrency, price: Double, increase: Bool) {
+        BGTaskScheduler.shared.register(forTaskWithIdentifier: priceMonitoringTaskIdentifier, using: nil) { task in
+            self.handlePriceMonitoringTask(crypto: crypto, targetPrice: price, increase: increase, task: task as! BGAppRefreshTask)
+        }
+    }
+    
+    func startMonitoringPercentage(crypto: CryptoCurrency, price: Double, percentage: Double) {
+        BGTaskScheduler.shared.register(forTaskWithIdentifier: percentageMonitoringTaskIdentifier, using: nil) { task in
+            self.handlePercentageMonitoringTask(crypto: crypto, targetPrice: price, percentage: percentage, task: task as! BGAppRefreshTask)
+        }
+    }
+    
+    func schedulePriceMonitoringTask() {
+        let request = BGAppRefreshTaskRequest(identifier: priceMonitoringTaskIdentifier)
+        request.earliestBeginDate = Date(timeIntervalSinceNow: 15)
+        
+        do {
+            try BGTaskScheduler.shared.submit(request)
+            print("Price monitoring task scheduled.")
+        } catch {
+            print("Failed to schedule price monitoring task: \(error.localizedDescription)")
+        }
+    }
+    
+    private func handlePriceMonitoringTask(crypto: CryptoCurrency, targetPrice: Double, increase: Bool, task: BGAppRefreshTask) {
+        schedulePriceMonitoringTask()
+        
+        print("Checking price")
+        
+        crypto.updateDetails()
+        if let currentPrice = (CryptoModel.isEuro() ? crypto.currentPrice?["eur"] : crypto.currentPrice?["usd"]) {
+            if (increase && currentPrice >= targetPrice) || (!increase && currentPrice <= targetPrice) {
+                self.schedulePriceNotification(targetPrice: targetPrice, crypto: crypto)
+            }
+        }
+        
+        task.setTaskCompleted(success: true)
+    }
+    
+    func schedulePercentageMonitoringTask() {
+        let request = BGAppRefreshTaskRequest(identifier: percentageMonitoringTaskIdentifier)
+        request.earliestBeginDate = Date(timeIntervalSinceNow: 15)
+        
+        do {
+            try BGTaskScheduler.shared.submit(request)
+            print("Percentage monitoring task scheduled.")
+        } catch {
+            print("Failed to schedule percentage monitoring task: \(error.localizedDescription)")
+        }
+    }
+    
+    private func handlePercentageMonitoringTask(crypto: CryptoCurrency, targetPrice: Double, percentage: Double, task: BGAppRefreshTask) {
+        schedulePercentageMonitoringTask()
+        
+        print("Checking percentage")
+        
+        crypto.updateDetails()
+        if let currentPrice = (CryptoModel.isEuro() ? crypto.currentPrice?["eur"] : crypto.currentPrice?["usd"]) {
+            if percentage < 0, currentPrice <= targetPrice * (1 + percentage) {
+                self.schedulePercentageChangeNotification(targetChange: percentage, crypto: crypto)
+            } else if percentage > 0, currentPrice >= targetPrice * (1 + percentage) {
+                self.schedulePercentageChangeNotification(targetChange: percentage, crypto: crypto)
+            }
+        }
+        
+        task.setTaskCompleted(success: true)
+    }
+    
+    /*
+    func startMonitoringPrice(crypto: CryptoCurrency, price: Double, increase: Bool) {
         Timer.scheduledTimer(withTimeInterval: TimeInterval(timeInterval), repeats: true) { timer in
+            print("Checking Price")
             crypto.updateDetails()
             guard let currentPrice = (CryptoModel.isEuro() ? crypto.currentPrice?["eur"] : crypto.currentPrice?["usd"]) else {
                 print("Failed to fetch price for \(crypto.name).")
                 return
             }
-            if currentPrice >= price {
-                timer.invalidate()
-                self.schedulePriceNotification(targetPrice: price, crypto: crypto)
+            if increase {
+                if currentPrice >= price {
+                    timer.invalidate()
+                    self.schedulePriceNotification(targetPrice: price, crypto: crypto)
+                }
+            } else {
+                if currentPrice <= price {
+                    timer.invalidate()
+                    self.schedulePriceNotification(targetPrice: price, crypto: crypto)
+                }
             }
+            
         }
     }
     
@@ -105,4 +184,5 @@ class NotificationManager {
             }
         }
     }
+     */
 }

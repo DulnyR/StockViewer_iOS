@@ -10,8 +10,11 @@
 		9D321E252D0EED3700C90B0C /* OptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D321E242D0EED3700C90B0C /* OptionsView.swift */; };
 		9D321E272D102A7700C90B0C /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D321E262D102A7700C90B0C /* NotificationManager.swift */; };
 		9D321E292D10316E00C90B0C /* AlarmViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D321E282D10316E00C90B0C /* AlarmViewModel.swift */; };
-		9D321E2B2D10339A00C90B0C /* AlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D321E2A2D10339A00C90B0C /* AlertView.swift */; };
 		9D321E2D2D104CCC00C90B0C /* CryptoAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D321E2C2D104CCC00C90B0C /* CryptoAlert.swift */; };
+		9D321E2F2D15901C00C90B0C /* CoinStatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D321E2E2D15901C00C90B0C /* CoinStatsView.swift */; };
+		9D321E312D15981F00C90B0C /* AlertFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D321E302D15981F00C90B0C /* AlertFormView.swift */; };
+		9D321E332D15B4BF00C90B0C /* CurrentAlertsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D321E322D15B4BF00C90B0C /* CurrentAlertsView.swift */; };
+		9D321E352D15CAA500C90B0C /* AlertsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D321E342D15CAA500C90B0C /* AlertsView.swift */; };
 		9DD1B05E2D08E66E00CBFCBF /* CryptoDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DD1B05D2D08E66E00CBFCBF /* CryptoDetailView.swift */; };
 		FB11F8A22CF89505005CD090 /* StockViewerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB11F8A12CF89505005CD090 /* StockViewerApp.swift */; };
 		FB11F8A42CF89505005CD090 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB11F8A32CF89505005CD090 /* ContentView.swift */; };
@@ -54,8 +57,12 @@
 		9D321E242D0EED3700C90B0C /* OptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionsView.swift; sourceTree = "<group>"; };
 		9D321E262D102A7700C90B0C /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		9D321E282D10316E00C90B0C /* AlarmViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmViewModel.swift; sourceTree = "<group>"; };
-		9D321E2A2D10339A00C90B0C /* AlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertView.swift; sourceTree = "<group>"; };
 		9D321E2C2D104CCC00C90B0C /* CryptoAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoAlert.swift; sourceTree = "<group>"; };
+		9D321E2E2D15901C00C90B0C /* CoinStatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoinStatsView.swift; sourceTree = "<group>"; };
+		9D321E302D15981F00C90B0C /* AlertFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertFormView.swift; sourceTree = "<group>"; };
+		9D321E322D15B4BF00C90B0C /* CurrentAlertsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentAlertsView.swift; sourceTree = "<group>"; };
+		9D321E342D15CAA500C90B0C /* AlertsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertsView.swift; sourceTree = "<group>"; };
+		9D321E362D15E15100C90B0C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		9DD1B05D2D08E66E00CBFCBF /* CryptoDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoDetailView.swift; sourceTree = "<group>"; };
 		FB11F89E2CF89505005CD090 /* StockViewer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StockViewer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FB11F8A12CF89505005CD090 /* StockViewerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StockViewerApp.swift; sourceTree = "<group>"; };
@@ -128,6 +135,7 @@
 		FB11F8A02CF89505005CD090 /* StockViewer */ = {
 			isa = PBXGroup;
 			children = (
+				9D321E362D15E15100C90B0C /* Info.plist */,
 				9D321E282D10316E00C90B0C /* AlarmViewModel.swift */,
 				9D321E262D102A7700C90B0C /* NotificationManager.swift */,
 				FB11F8A12CF89505005CD090 /* StockViewerApp.swift */,
@@ -147,8 +155,11 @@
 				FB562C1D2D09C95900FDD80F /* WatchButton.swift */,
 				FB562C1F2D09CEE600FDD80F /* EuroToggle.swift */,
 				9D321E242D0EED3700C90B0C /* OptionsView.swift */,
-				9D321E2A2D10339A00C90B0C /* AlertView.swift */,
 				9D321E2C2D104CCC00C90B0C /* CryptoAlert.swift */,
+				9D321E2E2D15901C00C90B0C /* CoinStatsView.swift */,
+				9D321E302D15981F00C90B0C /* AlertFormView.swift */,
+				9D321E322D15B4BF00C90B0C /* CurrentAlertsView.swift */,
+				9D321E342D15CAA500C90B0C /* AlertsView.swift */,
 			);
 			path = StockViewer;
 			sourceTree = "<group>";
@@ -309,6 +320,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FB56E4A72CFDE46400B7DB24 /* RecommendedListView.swift in Sources */,
+				9D321E2F2D15901C00C90B0C /* CoinStatsView.swift in Sources */,
 				FB11F8A42CF89505005CD090 /* ContentView.swift in Sources */,
 				FB9B4DA32CF9E4490096266C /* CryptoCurrency.swift in Sources */,
 				9D321E252D0EED3700C90B0C /* OptionsView.swift in Sources */,
@@ -318,8 +330,9 @@
 				9D321E292D10316E00C90B0C /* AlarmViewModel.swift in Sources */,
 				FB56E4AB2CFDFA8400B7DB24 /* CryptoModel.swift in Sources */,
 				FB11F8D02CF89867005CD090 /* TitleView.swift in Sources */,
+				9D321E352D15CAA500C90B0C /* AlertsView.swift in Sources */,
+				9D321E312D15981F00C90B0C /* AlertFormView.swift in Sources */,
 				FB56E4A32CFDDE1100B7DB24 /* RecommendedRowView.swift in Sources */,
-				9D321E2B2D10339A00C90B0C /* AlertView.swift in Sources */,
 				FB562C202D09CEE600FDD80F /* EuroToggle.swift in Sources */,
 				FB9B4DA12CF9E3F60096266C /* CryptoListView.swift in Sources */,
 				9D321E2D2D104CCC00C90B0C /* CryptoAlert.swift in Sources */,
@@ -327,6 +340,7 @@
 				FB562C1E2D09C95900FDD80F /* WatchButton.swift in Sources */,
 				9DD1B05E2D08E66E00CBFCBF /* CryptoDetailView.swift in Sources */,
 				FB9B4DA52CF9ED0B0096266C /* CryptoListRowView.swift in Sources */,
+				9D321E332D15B4BF00C90B0C /* CurrentAlertsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -492,6 +506,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"StockViewer/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = StockViewer/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -523,6 +538,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"StockViewer/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = StockViewer/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

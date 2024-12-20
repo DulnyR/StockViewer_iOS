@@ -46,37 +46,12 @@ struct CryptoDetailView: View {
                     Text("No data available.")
                         .foregroundColor(.gray)
                 } else {
-                    HStack {
-                        if (euro) {
-                            Text(CryptoModel.formatPrice(value: (crypto.currentPrice?["eur"])!, euro: euro))
-                                .font(.title)
-                        } else {
-                            Text(CryptoModel.formatPrice(value: (crypto.currentPrice?["usd"])!, euro: euro))
-                                .font(.title)
-                        }
-                        Spacer()
-                        if percentageChange > 0 {
-                            Image(systemName: "triangle.fill")
-                                .foregroundStyle(.green)
-                            Text("+" + String(format: "%.2f", percentageChange) + "%")
-                                .foregroundStyle(.green)
-                        } else if percentageChange == 0 {
-                            Text(String(format: "%.2f", percentageChange) + "%")
-                                .foregroundStyle(.gray)
-                        } else {
-                            Image(systemName: "triangle.fill")
-                                .rotationEffect(.degrees(180))
-                                .foregroundStyle(.red)
-                            Text(String(format: "%.2f", percentageChange) + "%")
-                                .foregroundStyle(.red)
-                        }
-                    }
-                    .padding()
+                    PriceView(euro: euro, crypto: crypto, percentageChange: percentageChange)
                     
                     Chart {
                         ForEach(prices, id: \.timestamp) { price in
                             LineMark(
-                                x: .value("Time", Date(timeIntervalSince1970: TimeInterval(price.timestamp / 1000))),
+                                x: .value("Time", dateFromTimestamp(timestamp: price.timestamp)),
                                 y: .value("Price", price.value)
                             )
                             .foregroundStyle(.green)
@@ -98,108 +73,13 @@ struct CryptoDetailView: View {
                     
                     WatchButton(crypto: crypto)
                         .padding()
+                        .background(Color.gray.opacity(0.1))
+                        .cornerRadius(12) 
+                        .frame(maxWidth: .infinity)
                     
-                    VStack(alignment: .leading, spacing: 16) {
-                        if isViewable["rank"] ?? true {
-                            HStack {
-                                Text("Market Cap Rank: ")
-                                    .font(.headline)
-                                Spacer()
-                                if let rank = crypto.marketCapRank {
-                                    Text("#" + String(rank))
-                                        .font(.headline)
-                                } else {
-                                    Text("N/A")
-                                        .font(.headline)
-                                        .foregroundColor(.gray)
-                                }
-                            }
-                        }
-                        
-                        if isViewable["24hHigh"] ?? true{
-                            HStack {
-                                Text("24H High (\(euro ? "€" : "$")): ")
-                                    .font(.headline)
-                                Spacer()
-                                if let volume = crypto.high24h, let value = volume[euro ? "eur" : "usd"] {
-                                    Text(CryptoModel.formatPrice(value: value, euro: euro))
-                                        .font(.headline)
-                                        .foregroundStyle(.green)
-                                } else {
-                                    Text("N/A")
-                                        .font(.headline)
-                                        .foregroundColor(.gray)
-                                }
-                            }
-                        }
-                        
-                        if isViewable["24hLow"] ?? true {
-                            HStack {
-                                Text("24H Low (\(euro ? "€" : "$")): ")
-                                    .font(.headline)
-                                Spacer()
-                                if let volume = crypto.low24h, let value = volume[euro ? "eur" : "usd"] {
-                                    Text(CryptoModel.formatPrice(value: value, euro: euro))
-                                        .font(.headline)
-                                        .foregroundStyle(.red)
-                                } else {
-                                    Text("N/A")
-                                        .font(.headline)
-                                        .foregroundColor(.gray)
-                                }
-                            }
-                        }
-                        
-                        if isViewable["marketCap"] ?? true {
-                            HStack {
-                                Text("Market Cap (\(euro ? "€" : "$")): ")
-                                    .font(.headline)
-                                Spacer()
-                                if let cap = crypto.marketCap, let value = cap[euro ? "eur" : "usd"] {
-                                    Text(CryptoModel.formatPrice(value: value, euro: euro))
-                                        .font(.headline)
-                                } else {
-                                    Text("N/A")
-                                        .font(.headline)
-                                        .foregroundColor(.gray)
-                                }
-                            }
-                        }
-                        
-                        if isViewable["totalVolume"] ?? true {
-                            HStack {
-                                Text("Total Volume (\(euro ? "€" : "$")): ")
-                                    .font(.headline)
-                                Spacer()
-                                if let volume = crypto.totalVolume, let value = volume[euro ? "eur" : "usd"] {
-                                    Text(CryptoModel.formatPrice(value: value, euro: euro))
-                                        .font(.headline)
-                                } else {
-                                    Text("N/A")
-                                        .font(.headline)
-                                        .foregroundColor(.gray)
-                                }
-                            }
-                        }
-                        
-                        if isViewable["totalSupply"] ?? true {
-                            HStack {
-                                Text("Total Supply: ")
-                                    .font(.headline)
-                                Spacer()
-                                if let supply = crypto.totalSupply {
-                                    Text(String(supply))
-                                        .font(.headline)
-                                } else {
-                                    Text("N/A")
-                                        .font(.headline)
-                                        .foregroundColor(.gray)
-                                }
-                            }
-                        }
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding()
+                    AlertFormView(crypto: crypto)
+                    
+                    CoinStatsView(isViewable: isViewable, crypto: crypto, euro: euro)
                     
                     if isViewable["description"] ?? true {
                         if let coinDescription = crypto.coinDescription {
@@ -240,24 +120,12 @@ struct CryptoDetailView: View {
                     Image(systemName: "gear")
                 }
             }
-            ToolbarItem {
-                Button(action: {
-                    isAlertSheetPresented.toggle()
-                }, label: {
-                    Image(systemName: "alarm.waves.left.and.right")
-                })
-            }
         }
         .sheet(isPresented: $isOptionsSheetPresented) {
             OptionsView(euro: euro, isViewable: isViewable) {
                 isViewable = CryptoModel.getViewables()
                 euro = CryptoModel.isEuro()
                 isOptionsSheetPresented = false
-            }
-        }
-        .sheet(isPresented: $isAlertSheetPresented) {
-            AlertView(crypto: CryptoCurrency) {
-                isAlertSheetPresented = false
             }
         }
         .onChange(of: selectedDays, initial: true) { oldValue, newValue in
@@ -307,5 +175,44 @@ struct CryptoDetailView: View {
     
     private func calculatePercentageChange() -> Double {
        return ((prices.last!.value - prices.first!.value) / prices.first!.value) * 100
+    }
+    
+    private func dateFromTimestamp(timestamp: Int) -> Date {
+        Date(timeIntervalSince1970: TimeInterval(timestamp / 1000))
+    }
+}
+
+private struct PriceView: View {
+    var euro: Bool
+    var crypto: CryptoCurrency
+    var percentageChange: Double
+    
+    var body: some View {
+        HStack {
+            if (euro) {
+                Text(CryptoModel.formatPrice(value: (crypto.currentPrice?["eur"])!, euro: euro))
+                    .font(.title)
+            } else {
+                Text(CryptoModel.formatPrice(value: (crypto.currentPrice?["usd"])!, euro: euro))
+                    .font(.title)
+            }
+            Spacer()
+            if percentageChange > 0 {
+                Image(systemName: "triangle.fill")
+                    .foregroundStyle(.green)
+                Text("+" + String(format: "%.2f", percentageChange) + "%")
+                    .foregroundStyle(.green)
+            } else if percentageChange == 0 {
+                Text(String(format: "%.2f", percentageChange) + "%")
+                    .foregroundStyle(.gray)
+            } else {
+                Image(systemName: "triangle.fill")
+                    .rotationEffect(.degrees(180))
+                    .foregroundStyle(.red)
+                Text(String(format: "%.2f", percentageChange) + "%")
+                    .foregroundStyle(.red)
+            }
+        }
+        .padding()
     }
 }

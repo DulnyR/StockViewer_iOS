@@ -13,6 +13,7 @@ struct StockViewerApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             CryptoCurrency.self,
+            CryptoAlert.self
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 

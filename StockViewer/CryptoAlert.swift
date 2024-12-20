@@ -10,11 +10,11 @@ import SwiftData
 
 @Model
 class CryptoAlert {
-    var id: UUID
-    var cryptoName: String
-    var targetPrice: Double
-    var percentage: Double?
-    var dateCreated: Date
+    @Attribute var id: UUID
+    @Attribute var cryptoName: String
+    @Attribute var targetPrice: Double
+    @Attribute var percentage: Double?
+    @Attribute var dateCreated: Date
     
     init(id: UUID = UUID(), cryptoName: String, targetPrice: Double, percentage: Double, dateCreated: Date = Date()) {
         self.id = id

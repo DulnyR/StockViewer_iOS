@@ -19,6 +19,10 @@ struct ContentView: View {
                 .tabItem {
                     Label ("Explore", systemImage: "magnifyingglass")
                 }
+            AlertView()
+                .tabItem {
+                    Label ("Alerts", systemImage: "alarm.waves.left.and.right")
+                }
             SettingsView()
                 .tabItem {
                     Label ("Settings", systemImage: "gearshape")
@@ -46,13 +50,18 @@ struct ExploreView : View {
     }
 }
 
-struct SettingsView : View {
+struct AlertView : View {
     var body: some View {
         VStack {
             TitleView()
-            AlertView()
-            OptionsView(euro: CryptoModel.isEuro(), isViewable: CryptoModel.getViewables())
+            AlertsView()
         }
+    }
+}
+
+struct SettingsView : View {
+    var body: some View {
+        OptionsView(euro: CryptoModel.isEuro(), isViewable: CryptoModel.getViewables())
     }
 }
 
