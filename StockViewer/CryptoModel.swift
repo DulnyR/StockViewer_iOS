@@ -9,25 +9,105 @@ import Foundation
 import SwiftData
 
 class CryptoModel {
-    private var modelContext: ModelContext
-    private var currencies: [CryptoCurrency]
+    public static var coins: [String : CryptoCurrency] = [:]
     
-    init(modelContext: ModelContext, currencies: [CryptoCurrency]) {
-            self.modelContext = modelContext
-            self.currencies = currencies
-    }
-    
-    public func addCoin(coin: CryptoCurrency) {
-        modelContext.insert(coin)
-    }
-    
-    public func deleteCoin(offsets: IndexSet) {
-        for index in offsets {
-            modelContext.delete(currencies[index])
+    public static func loadCoins() {
+        APIService.getAllCoins { result in
+            switch result {
+                case .success(let coins):
+                CryptoModel.coins = coins
+                    
+                case .failure(let error):
+                    print("Error:", error)
+                }
         }
     }
     
-    public func getCurrencies() -> [CryptoCurrency] {
-        return currencies
+    public static func getFirstTenMatches(substring: String) -> [CryptoCurrency] {
+        if coins.isEmpty {
+            loadCoins()
+        }
+        let substring = substring.lowercased().replacingOccurrences(of: " ", with: "-")
+        var matches = [CryptoCurrency]()
+        var foundStrings = Set<String>()
+        let coinArray = coins.keys
+        
+        for string in coinArray {
+            let string = string.lowercased()
+            if string.hasPrefix(substring) {
+                matches.append(coins[string]!)
+                foundStrings.insert(string)
+            }
+            
+            if matches.count == 10 {
+                break
+            }
+        }
+        
+        if matches.count < 10 {
+            for string in coinArray {
+                let string = string.lowercased()
+                if string.contains(substring) && !foundStrings.contains(string) {
+                    matches.append(coins[string]!)
+                }
+
+                if matches.count == 10 {
+                    break
+                }
+            }
+        }
+        
+        return matches
+    }
+    
+    public static func getCoin(name: String) -> CryptoCurrency {
+        if coins.isEmpty {
+            loadCoins()
+        }
+        if let coin = coins[name] {
+            return coin
+        }
+        return CryptoCurrency(name: name, APIid: "Unknown", symbol: "Unknown")
+    }
+    
+    public static func isEuro() -> Bool {
+        return UserDefaults.standard.bool(forKey: "euro")
+    }
+    
+    public static func updateEuro(euro: Bool) {
+        UserDefaults.standard.set(euro, forKey: "euro")
+    }
+    
+    public static func getViewables() -> [String: Bool] {
+        return UserDefaults.standard.dictionary(forKey: "viewables") as? [String: Bool] ?? [
+            "rank": true,
+            "24hHigh": true,
+            "24hLow": true,
+            "marketCap": true,
+            "volume": true,
+            "supply": true,
+            "description": true
+        ]
+    }
+    
+    public static func setViewables(viewables: [String: Bool]) {
+        UserDefaults.standard.set(viewables, forKey: "viewables")
+    }
+
+    
+    public static func formatPrice(value: Double, euro: Bool) -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.currencyCode = euro ? "EUR" : "USD"
+        formatter.currencySymbol = euro ? "€" : "$"
+        formatter.locale = Locale(identifier: "en_US")
+        var digits = 6
+        if value > 1000000 {
+            digits = 0
+        } else if value > 10 {
+            digits = 2
+        }
+        formatter.maximumFractionDigits = digits
+        return formatter.string(from: NSNumber(value: value)) ?? "\(value)"
     }
 }

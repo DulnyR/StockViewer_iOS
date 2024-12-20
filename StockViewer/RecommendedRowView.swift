@@ -9,18 +9,21 @@ import SwiftUI
 import SwiftData
 
 struct RecommendedRowView: View {
-    @Environment(\.modelContext) private var modelContext
-    @Query private var currencies: [CryptoCurrency]
     var crypto: CryptoCurrency
+    var euro: Bool
     
     var body: some View {
         VStack {
             HStack {
-                //image hardcoded
-                Image(systemName: "bitcoinsign.circle")
-                    .resizable()
-                    .frame(width: 32.0, height: 32.0)
-                    .padding()
+                AsyncImage(url: crypto.imageURL) { cryptoImage in
+                    cryptoImage.resizable()
+                } placeholder: {
+                    Image(systemName: "dollarsign.ring")
+                        .resizable()
+                        .frame(width: 32.0, height: 32.0)
+                        .padding()
+                }
+                .frame(width: 32.0, height: 32.0)
                 VStack {
                     HStack {
                         Text(crypto.name)
@@ -28,30 +31,27 @@ struct RecommendedRowView: View {
                         Spacer()
                     }
                     HStack {
-                        Text(crypto.abbreviation)
+                        Text(crypto.symbol)
                             .font(.subheadline)
                             .foregroundStyle(.gray)
                         Spacer()
                     }
                 }
+                .onAppear {
+                    crypto.updateDetails()
+                }
                 Spacer()
-                Text("€\(crypto.currentPrice, specifier: "%.2f")")
-                    .foregroundColor(.gray)
+                if(euro) {
+                    Text(CryptoModel.formatPrice(value: (crypto.currentPrice?["eur"]) ?? 0.00, euro: euro))
+                        .foregroundColor(.gray)
+                } else {
+                    Text(CryptoModel.formatPrice(value: (crypto.currentPrice?["usd"]) ?? 0.00, euro: euro))
+                        .foregroundColor(.gray)
+                }
             }
             Text(crypto.content ?? "No description available.")
             Divider()
-            Button(action: {
-                addCrypto()
-            }, label: {
-                Text("**Watch**")
-            })
-        }
-    }
-    
-    public func addCrypto() {
-        withAnimation {
-            let newCrypto = CryptoCurrency(name: crypto.name, abbreviation: crypto.abbreviation, currentPrice: crypto.currentPrice)
-            modelContext.insert(newCrypto)
+            WatchButton(crypto: crypto)
         }
     }
 }

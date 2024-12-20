@@ -19,6 +19,10 @@ struct ContentView: View {
                 .tabItem {
                     Label ("Explore", systemImage: "magnifyingglass")
                 }
+            SettingsView()
+                .tabItem {
+                    Label ("Settings", systemImage: "gearshape")
+                }
          }
         .tint(Color.green)
     }
@@ -38,6 +42,16 @@ struct ExploreView : View {
         VStack {
             TitleView()
             RecommendedListView()
+        }
+    }
+}
+
+struct SettingsView : View {
+    var body: some View {
+        VStack {
+            TitleView()
+            AlertView()
+            OptionsView(euro: CryptoModel.isEuro(), isViewable: CryptoModel.getViewables())
         }
     }
 }
