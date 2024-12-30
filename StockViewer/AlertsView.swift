@@ -2,33 +2,33 @@
 //  AlertsView.swift
 //  StockViewer
 //
-//  Created by Inna Castro on 20/12/24.
+//  Created by Radek Dulny on 20/12/24.
 //
 
 import SwiftUI
 
 struct AlertsView: View {
-    @State private var euro: Bool = CryptoModel.isEuro()
+    @ObservedObject var viewModel: CryptoViewModel
+    @State private var euro: Bool = true
     
     var body: some View {
         NavigationStack {
             VStack {
-                AlertFormView()
-                CurrentAlertsView()
+                AlertFormView(viewModel: viewModel)
+                CurrentAlertsView(viewModel: viewModel)
             }
             .navigationTitle(Text("Alerts"))
             .toolbar {
                 ToolbarItem {
-                    EuroToggle(euro: $euro)
+                    EuroToggle(viewModel: viewModel, euro: $euro)
                 }
             }
             .onChange(of: euro, initial: true) { oldValue, newValue in
-                CryptoModel.updateEuro(euro: newValue)
+                viewModel.setEuro(euro: newValue)
+            }
+            .onAppear {
+                euro = viewModel.isEuro()
             }
         }
     }
-}
-
-#Preview {
-    AlertsView()
 }

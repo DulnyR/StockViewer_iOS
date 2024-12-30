@@ -2,7 +2,7 @@
 //  CryptoAlert.swift
 //  StockViewer
 //
-//  Created by Inna Castro on 16/12/24.
+//  Created by Radek Dulny on 16/12/24.
 //
 
 import Foundation
@@ -16,6 +16,7 @@ class CryptoAlert {
     @Attribute var percentage: Double?
     @Attribute var dateCreated: Date
     
+    // initialiser for percentage alerts
     init(id: UUID = UUID(), cryptoName: String, targetPrice: Double, percentage: Double, dateCreated: Date = Date()) {
         self.id = id
         self.cryptoName = cryptoName
@@ -24,6 +25,7 @@ class CryptoAlert {
         self.dateCreated = dateCreated
     }
     
+    // initialiser for price alerts
     init(id: UUID = UUID(), cryptoName: String, targetPrice: Double, dateCreated: Date = Date()) {
         self.id = id
         self.cryptoName = cryptoName

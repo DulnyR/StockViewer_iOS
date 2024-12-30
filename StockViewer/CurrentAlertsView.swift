@@ -2,7 +2,7 @@
 //  CurrentAlertsView.swift
 //  StockViewer
 //
-//  Created by Inna Castro on 20/12/24.
+//  Created by Radek Dulny on 20/12/24.
 //
 
 import SwiftUI
@@ -11,6 +11,7 @@ import SwiftData
 struct CurrentAlertsView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var alerts: [CryptoAlert]
+    @ObservedObject var viewModel: CryptoViewModel
     
     var body: some View {
         VStack {
@@ -24,7 +25,7 @@ struct CurrentAlertsView: View {
                             VStack(alignment: .leading) {
                                 Text(alert.cryptoName)
                                     .font(.headline)
-                                Text("Target: \(CryptoModel.formatPrice(value: alert.targetPrice, euro: CryptoModel.isEuro()))")
+                                Text("Target: \(PriceFormatter.formatPrice(value: alert.targetPrice, euro: viewModel.isEuro()))")
                                     .font(.subheadline)
                             }
                             Spacer()

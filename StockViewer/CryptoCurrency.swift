@@ -33,7 +33,8 @@ class CryptoCurrency {
         self.symbol = symbol
     }
 
-    func updateDetails() {        
+    // fetches most current data about the coin from the API
+    func updateDetails() {
         APIService.getDetails(coinId: self.APIid) { result in
             switch result {
                 case .success (let data):

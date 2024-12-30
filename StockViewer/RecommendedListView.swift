@@ -9,6 +9,7 @@ import SwiftUI
 import SwiftData
 
 struct RecommendedListView: View {
+    @ObservedObject var viewModel: CryptoViewModel
     @State private var recommended: [CryptoCurrency] = []
     @State private var searchText = ""
     @State private var fetched = false
@@ -18,7 +19,7 @@ struct RecommendedListView: View {
         NavigationStack {
             VStack {
                 if !searchText.isEmpty {
-                    let matches = CryptoModel.getFirstTenMatches(substring: searchText)
+                    let matches = viewModel.getFirstTenMatches(substring: searchText)
                     
                     if matches.isEmpty {
                         Text("No matches found for '\(searchText)'")
@@ -28,7 +29,7 @@ struct RecommendedListView: View {
                     } else {
                         List {
                             ForEach(matches, id: \.self) { coin in
-                                CryptoListRowView(crypto: coin, euro: euro, showPrice: false)
+                                CryptoListRowView(viewModel: viewModel, crypto: coin, euro: euro, showPrice: false)
                             }
                         }
                     }
@@ -51,22 +52,17 @@ struct RecommendedListView: View {
             .navigationTitle("Explore")
             .toolbar {
                 ToolbarItem {
-                    EuroToggle(euro: $euro)
+                    EuroToggle(viewModel: viewModel, euro: $euro)
                 }
             }
         }
         .onAppear {
-            euro = CryptoModel.isEuro()
+            euro = viewModel.isEuro()
             if (!fetched) {
-                fetchRecommended()
+                recommended = viewModel.getRecommended()
             }
             fetched = true
         }
         .tint(Color.green)
-    }
-    
-    func fetchRecommended() {
-        let data = Recommended()
-        recommended = data.getRecommended()
     }
 }

@@ -7,14 +7,16 @@
 
 import SwiftUI
 
+// shows every row in a list of coins
 struct CryptoListRowView: View {
+    @StateObject var viewModel: CryptoViewModel
     var crypto: CryptoCurrency
     var euro: Bool
     var showPrice: Bool = true
     
     var body: some View {
         NavigationLink {
-            CryptoDetailView(crypto: crypto)
+            CryptoDetailView(viewModel: viewModel, crypto: crypto)
         } label: {
             HStack {
                 AsyncImage(url: crypto.imageURL) { cryptoImage in
@@ -46,10 +48,10 @@ struct CryptoListRowView: View {
                 Spacer()
                 if (showPrice) {
                     if (euro) {
-                        Text(CryptoModel.formatPrice(value: (crypto.currentPrice?["eur"])!, euro: euro))
+                        Text(PriceFormatter.formatPrice(value: (crypto.currentPrice?["eur"])!, euro: euro))
                             .foregroundColor(.gray)
                     } else {
-                        Text(CryptoModel.formatPrice(value: (crypto.currentPrice?["usd"])!, euro: euro))
+                        Text(PriceFormatter.formatPrice(value: (crypto.currentPrice?["usd"])!, euro: euro))
                             .foregroundColor(.gray)
                     }
                 }

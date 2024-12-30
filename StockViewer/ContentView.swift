@@ -9,21 +9,23 @@ import SwiftUI
 import SwiftData
 
 struct ContentView: View {
+    @StateObject var viewModel: CryptoViewModel = CryptoViewModel()
+    
     var body: some View {
         TabView {
-            HomeView()
+            HomeView(viewModel: viewModel)
                 .tabItem {
                     Label ("Home", systemImage: "house")
                 }
-            ExploreView()
+            ExploreView(viewModel: viewModel)
                 .tabItem {
                     Label ("Explore", systemImage: "magnifyingglass")
                 }
-            AlertView()
+            AlertView(viewModel: viewModel)
                 .tabItem {
                     Label ("Alerts", systemImage: "alarm.waves.left.and.right")
                 }
-            SettingsView()
+            SettingsView(viewModel: viewModel)
                 .tabItem {
                     Label ("Settings", systemImage: "gearshape")
                 }
@@ -33,35 +35,43 @@ struct ContentView: View {
 }
 
 struct HomeView: View {
+    @ObservedObject var viewModel: CryptoViewModel
+    
     var body: some View {
         VStack {
             TitleView()
-            CryptoListView()
+            CryptoListView(viewModel: viewModel)
         }
     }
 }
 
 struct ExploreView : View {
+    @ObservedObject var viewModel: CryptoViewModel
+    
     var body: some View {
         VStack {
             TitleView()
-            RecommendedListView()
+            RecommendedListView(viewModel: viewModel)
         }
     }
 }
 
 struct AlertView : View {
+    @ObservedObject var viewModel: CryptoViewModel
+    
     var body: some View {
         VStack {
             TitleView()
-            AlertsView()
+            AlertsView(viewModel: viewModel)
         }
     }
 }
 
 struct SettingsView : View {
+    @ObservedObject var viewModel: CryptoViewModel
+    
     var body: some View {
-        OptionsView(euro: CryptoModel.isEuro(), isViewable: CryptoModel.getViewables())
+        OptionsView(viewModel: viewModel, euro: viewModel.isEuro(), isViewable: viewModel.getViewables())
     }
 }
 

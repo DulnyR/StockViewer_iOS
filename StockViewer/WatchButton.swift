@@ -13,7 +13,6 @@ struct WatchButton: View {
     @Query private var currencies: [CryptoCurrency]
     var crypto: CryptoCurrency
     
-    
     var body: some View {
         if (!currencies.contains(where: { $0.APIid == crypto.APIid })) {
             Button(action: {

@@ -2,7 +2,7 @@
 //  CoinStatsView.swift
 //  StockViewer
 //
-//  Created by Inna Castro on 20/12/24.
+//  Created by Radek Dulny on 20/12/24.
 //
 
 import SwiftUI
@@ -36,7 +36,7 @@ struct CoinStatsView: View {
                         .font(.headline)
                     Spacer()
                     if let volume = crypto.high24h, let value = volume[euro ? "eur" : "usd"] {
-                        Text(CryptoModel.formatPrice(value: value, euro: euro))
+                        Text(PriceFormatter.formatPrice(value: value, euro: euro))
                             .font(.headline)
                             .foregroundStyle(.green)
                     } else {
@@ -53,7 +53,7 @@ struct CoinStatsView: View {
                         .font(.headline)
                     Spacer()
                     if let volume = crypto.low24h, let value = volume[euro ? "eur" : "usd"] {
-                        Text(CryptoModel.formatPrice(value: value, euro: euro))
+                        Text(PriceFormatter.formatPrice(value: value, euro: euro))
                             .font(.headline)
                             .foregroundStyle(.red)
                     } else {
@@ -70,7 +70,7 @@ struct CoinStatsView: View {
                         .font(.headline)
                     Spacer()
                     if let cap = crypto.marketCap, let value = cap[euro ? "eur" : "usd"] {
-                        Text(CryptoModel.formatPrice(value: value, euro: euro))
+                        Text(PriceFormatter.formatPrice(value: value, euro: euro))
                             .font(.headline)
                     } else {
                         Text("N/A")
@@ -86,7 +86,7 @@ struct CoinStatsView: View {
                         .font(.headline)
                     Spacer()
                     if let volume = crypto.totalVolume, let value = volume[euro ? "eur" : "usd"] {
-                        Text(CryptoModel.formatPrice(value: value, euro: euro))
+                        Text(PriceFormatter.formatPrice(value: value, euro: euro))
                             .font(.headline)
                     } else {
                         Text("N/A")

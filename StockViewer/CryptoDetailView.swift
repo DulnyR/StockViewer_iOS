@@ -2,7 +2,7 @@
 //  CryptoDetailView.swift
 //  StockViewer
 //
-//  Created by Inna Castro on 10/12/24.
+//  Created by Radek Dulny on 10/12/24.
 //
 
 import SwiftUI
@@ -26,7 +26,7 @@ struct CryptoDetailView: View {
         "supply" : true,
         "description" : true
     ]
-
+    @ObservedObject var viewModel: CryptoViewModel
     var crypto: CryptoCurrency
 
     var body: some View {
@@ -40,6 +40,7 @@ struct CryptoDetailView: View {
                         .foregroundStyle(.gray)
                 }
                 
+                // show loading screen when loading data
                 if isLoadingPrices || (crypto.currentPrice?.isEmpty ?? true) {
                     ProgressView("Loading data...")
                 } else if prices.isEmpty {
@@ -77,7 +78,7 @@ struct CryptoDetailView: View {
                         .cornerRadius(12) 
                         .frame(maxWidth: .infinity)
                     
-                    AlertFormView(crypto: crypto)
+                    AlertFormView(viewModel: viewModel, crypto: crypto)
                     
                     CoinStatsView(isViewable: isViewable, crypto: crypto, euro: euro)
                     
@@ -123,8 +124,8 @@ struct CryptoDetailView: View {
         }
         .sheet(isPresented: $isOptionsSheetPresented) {
             OptionsView(euro: euro, isViewable: isViewable) {
-                isViewable = CryptoModel.getViewables()
-                euro = CryptoModel.isEuro()
+                isViewable = viewModel.getViewables()
+                euro = viewModel.isEuro()
                 isOptionsSheetPresented = false
             }
         }
@@ -135,9 +136,9 @@ struct CryptoDetailView: View {
             fetchData(days: selectedDays, currency: (newValue ? "eur" : "usd"))
         }
         .onAppear {
-            euro = CryptoModel.isEuro()
+            euro = viewModel.isEuro()
             crypto.updateDetails()
-            isViewable = CryptoModel.getViewables()
+            isViewable = viewModel.getViewables()
         }
     }
 
@@ -157,6 +158,7 @@ struct CryptoDetailView: View {
         }
     }
     
+    // calculates scale of x axis
     private func xScaleDomain() -> ClosedRange<Date> {
         let timestamps = prices.map { Date(timeIntervalSince1970: TimeInterval($0.timestamp / 1000)) }
         guard let minTime = timestamps.min(), let maxTime = timestamps.max() else {
@@ -165,6 +167,7 @@ struct CryptoDetailView: View {
         return minTime...maxTime
     }
 
+    // calculates scale of y axis
     private func yScaleDomain() -> ClosedRange<Double> {
         guard let minValue = prices.map({ $0.value }).min(),
               let maxValue = prices.map({ $0.value }).max() else {
@@ -173,10 +176,12 @@ struct CryptoDetailView: View {
         return minValue...maxValue
     }
     
+    // calculates percentage change from start to end of graph
     private func calculatePercentageChange() -> Double {
        return ((prices.last!.value - prices.first!.value) / prices.first!.value) * 100
     }
     
+    // calculates date given timestamp
     private func dateFromTimestamp(timestamp: Int) -> Date {
         Date(timeIntervalSince1970: TimeInterval(timestamp / 1000))
     }
@@ -190,10 +195,10 @@ private struct PriceView: View {
     var body: some View {
         HStack {
             if (euro) {
-                Text(CryptoModel.formatPrice(value: (crypto.currentPrice?["eur"])!, euro: euro))
+                Text(PriceFormatter.formatPrice(value: (crypto.currentPrice?["eur"])!, euro: euro))
                     .font(.title)
             } else {
-                Text(CryptoModel.formatPrice(value: (crypto.currentPrice?["usd"])!, euro: euro))
+                Text(PriceFormatter.formatPrice(value: (crypto.currentPrice?["usd"])!, euro: euro))
                     .font(.title)
             }
             Spacer()

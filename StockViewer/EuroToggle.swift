@@ -7,14 +7,16 @@
 
 import SwiftUI
 
+// used to toggle between euro and dollars
 struct EuroToggle: View {
+    @StateObject var viewModel: CryptoViewModel
     @Binding var euro: Bool
     
     var body: some View {
         VStack {
             Button(action: {
                 euro.toggle()
-                CryptoModel.updateEuro(euro: euro)
+                viewModel.setEuro(euro: euro)
             }) {
                 HStack {
                     Text(euro ? "EUR €" : "USD $")
@@ -23,7 +25,7 @@ struct EuroToggle: View {
             }
         }
         .onAppear {
-            euro = CryptoModel.isEuro()
+            euro = viewModel.isEuro()
         }
     }
 }

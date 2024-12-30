@@ -12,9 +12,11 @@ struct CryptoListView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var currencies: [CryptoCurrency]
     @State private var euro: Bool = true
+    @ObservedObject var viewModel: CryptoViewModel
     
     var body: some View {
         NavigationStack {
+            // list my coins, prioritising favourites and sorting alphabetically
             List {
                 ForEach(sortedCurrencies) { currency in
                     CryptoListRowView(crypto: currency, euro: euro)
@@ -33,7 +35,7 @@ struct CryptoListView: View {
                 .onDelete(perform: deleteCrypto)
             }
             .onAppear {
-                euro = CryptoModel.isEuro()
+                euro = viewModel.isEuro()
                 DispatchQueue.main.async {
                     CryptoModel.loadCoins()
                     for currency in currencies {
@@ -83,9 +85,4 @@ struct CryptoListView: View {
             }
         }
     }
-}
-
-#Preview {
-    CryptoListView()
-        .modelContainer(for: CryptoCurrency.self, inMemory: true)
 }

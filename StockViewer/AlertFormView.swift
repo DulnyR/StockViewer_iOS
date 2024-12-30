@@ -2,7 +2,7 @@
 //  AlertFormView.swift
 //  StockViewer
 //
-//  Created by Inna Castro on 20/12/24.
+//  Created by Radek Dulny on 20/12/24.
 //
 
 import SwiftUI
@@ -12,6 +12,7 @@ struct AlertFormView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var currencies: [CryptoCurrency]
     @Query private var alerts: [CryptoAlert]
+    @ObservedObject var viewModel: CryptoViewModel
     @State var crypto: CryptoCurrency?
     @State var price: Double?
     @State var percentage: Double?
@@ -24,7 +25,7 @@ struct AlertFormView: View {
             Form {
                 Section(header: Text("Alert me when:")
                     .fontWeight(.bold)
-                    .padding(.bottom, 8) // Reduce space below header
+                    .padding(.bottom, 8)
                 ) {
                     if currencies.isEmpty {
                         Text("Add more coins to your watchlist to set alerts.")
@@ -49,7 +50,7 @@ struct AlertFormView: View {
                                 case 0:
                                     TextField("Enter target price: ", text: $priceString)
                                         .keyboardType(.decimalPad)
-                                    Text(CryptoModel.isEuro() ? "€" : "$")
+                                    Text(viewModel.isEuro() ? "€" : "$")
                                 case 1:
                                     TextField("Enter increase percentage: ", text: $percentageString)
                                         .keyboardType(.decimalPad)
@@ -75,6 +76,9 @@ struct AlertFormView: View {
             }
             .onAppear {
                 NotificationManager.shared.requestAuthorization()
+                if crypto == nil {
+                    crypto = viewModel.getCoin(name: "bitcoin")
+                }
             }
             
             Button("Save Alert") {
@@ -89,10 +93,11 @@ struct AlertFormView: View {
         }
     }
     
+    // price notification alert
     private func savePriceAlert() {
         guard let crypto = crypto, let price = price else { return }
         
-        let currentPrice = ((CryptoModel.isEuro() ? crypto.currentPrice?["eur"] : crypto.currentPrice?["usd"])!)
+        let currentPrice = ((viewModel.isEuro() ? crypto.currentPrice?["eur"] : crypto.currentPrice?["usd"])!)
         
         let alert = CryptoAlert(cryptoName: crypto.name, targetPrice: price)
         print("Created Alert: \(alert)")
@@ -110,18 +115,19 @@ struct AlertFormView: View {
         
         let increase =  currentPrice > price
         
-        NotificationManager.shared.startMonitoringPrice(crypto: crypto, price: price, increase: increase)
+        viewModel.setPriceAlarm(crypto: crypto, price: price, increase: increase)
     }
     
+    // percentage notification alert 
     private func savePercentageAlert() {
         guard let crypto = crypto, let percentage = percentage else { return }
         
-        let alert = CryptoAlert(cryptoName: crypto.name, targetPrice: ((CryptoModel.isEuro() ? crypto.currentPrice?["eur"] : crypto.currentPrice?["usd"])!), percentage: percentage)
+        let alert = CryptoAlert(cryptoName: crypto.name, targetPrice: ((viewModel.isEuro() ? crypto.currentPrice?["eur"] : crypto.currentPrice?["usd"])!), percentage: percentage)
         
         withAnimation {
             modelContext.insert(alert)
         }
         
-        NotificationManager.shared.startMonitoringPercentage(crypto: crypto, price: ((CryptoModel.isEuro() ? crypto.currentPrice?["eur"] : crypto.currentPrice?["usd"])!), percentage: percentage)
+        viewModel.setPercentageChangeAlarm(crypto: crypto, price: ((viewModel.isEuro() ? crypto.currentPrice?["eur"] : crypto.currentPrice?["usd"])!), percentage: percentage)
     }
 }
