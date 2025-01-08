@@ -7,34 +7,54 @@
 
 import SwiftUI
 
+// shows every row in a list of coins
 struct CryptoListRowView: View {
+    @StateObject var viewModel: CryptoViewModel
     var crypto: CryptoCurrency
+    var euro: Bool
+    var showPrice: Bool = true
     
     var body: some View {
         NavigationLink {
-            Text("Details for \(crypto.name)")
+            CryptoDetailView(viewModel: viewModel, crypto: crypto)
         } label: {
             HStack {
-                Image(systemName: "bitcoinsign.circle")
-                    .resizable()
-                    .frame(width: 32.0, height: 32.0)
-                    .padding()
+                AsyncImage(url: crypto.imageURL) { cryptoImage in
+                    cryptoImage.resizable()
+                } placeholder: {
+                    Image(systemName: "dollarsign.circle")
+                        .resizable()
+                        .frame(width: 32.0, height: 32.0)
+                        .padding()
+                }
+                .frame(width: 32.0, height: 32.0)
+                
                 VStack {
                     HStack {
                         Text(crypto.name)
                             .font(.headline)
+                        if crypto.isFavorite {
+                            Image(systemName: "star.fill")
+                        }
                         Spacer()
                     }
                     HStack {
-                        Text(crypto.abbreviation)
+                        Text(crypto.symbol)
                             .font(.subheadline)
                             .foregroundStyle(.gray)
                         Spacer()
                     }
                 }
                 Spacer()
-                Text("€\(crypto.currentPrice, specifier: "%.2f")")
-                    .foregroundColor(.gray)
+                if (showPrice) {
+                    if (euro) {
+                        Text(PriceFormatter.formatPrice(value: crypto.currentPrice?["eur"] ?? 0, euro: euro))
+                            .foregroundColor(.gray)
+                    } else {
+                        Text(PriceFormatter.formatPrice(value: crypto.currentPrice?["usd"] ?? 0, euro: euro))
+                            .foregroundColor(.gray)
+                    }
+                }
             }
         }
     }

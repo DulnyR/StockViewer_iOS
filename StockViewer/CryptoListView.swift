@@ -11,14 +11,19 @@ import SwiftData
 struct CryptoListView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var currencies: [CryptoCurrency]
+    @State private var euro: Bool = true
+    @ObservedObject var viewModel: CryptoViewModel
     
     var body: some View {
         NavigationStack {
-            List {
-                ForEach(currencies) { currency in
-                    CryptoListRowView(crypto: currency)
+            // list "my coins", prioritising favourites and sorting alphabetically
+            listView
+            .onAppear {
+                euro = viewModel.isEuro()
+                viewModel.loadCoins()
+                for currency in currencies {
+                    currency.updateDetails()
                 }
-                .onDelete(perform: deleteCrypto)
             }
             .navigationTitle("My Coins")
             .overlay {
@@ -32,25 +37,48 @@ struct CryptoListView: View {
             }
             .toolbar {
                 ToolbarItem {
-                    Button(action: {
-                        print("currency changed")
-                    }, label: {
-                        Text("**USD/EUR**")
-                    })
+                    EuroToggle(viewModel: viewModel, euro: $euro)
                 }
             }
         }
         .tint(Color.green)
     }
     
-    /*
-    public func addCrypto() {
-        withAnimation {
-            let newCrypto = CryptoCurrency(name: "Bitcoin", abbreviation: "BTC", currentPrice: 99.78)
-            modelContext.insert(newCrypto)
+    private var listView: some View {
+        List {
+            ForEach(sortedCurrencies) { currency in
+                CryptoListRowView(viewModel: viewModel, crypto: currency, euro: euro)
+                .swipeActions(edge: .leading) {
+                    Button(action: {
+                        toggleFavorite(for: currency)
+                    }) {
+                        Label(
+                            currency.isFavorite ? "Unfavorite" : "Favorite",
+                            systemImage: currency.isFavorite ? "star.slash.fill" : "star"
+                        )
+                    }
+                    .tint(currency.isFavorite ? .gray : .yellow)
+                }
+            }
+            .onDelete(perform: deleteCrypto)
         }
     }
-     */
+    
+    private var sortedCurrencies: [CryptoCurrency] {
+        currencies.sorted {
+            if $0.isFavorite == $1.isFavorite {
+                return $0.name < $1.name
+            }
+            return $0.isFavorite && !$1.isFavorite 
+        }
+    }
+
+    private func toggleFavorite(for currency: CryptoCurrency) {
+        withAnimation {
+            currency.isFavorite.toggle()
+            try? modelContext.save()
+        }
+    }
 
     private func deleteCrypto(offsets: IndexSet) {
         withAnimation {
@@ -59,9 +87,4 @@ struct CryptoListView: View {
             }
         }
     }
-}
-
-#Preview {
-    CryptoListView()
-        .modelContainer(for: CryptoCurrency.self, inMemory: true)
 }

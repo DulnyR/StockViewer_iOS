@@ -10,9 +10,17 @@ import SwiftData
 
 @main
 struct StockViewerApp: App {
+    @StateObject var viewModel: CryptoViewModel = CryptoViewModel()
+    
+    init() {
+        NotificationManager.shared.registerBackgroundTasks()
+        NotificationManager.shared.requestAuthorization()
+    }
+    
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            Item.self,
+            CryptoCurrency.self,
+            CryptoAlert.self
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
@@ -25,7 +33,7 @@ struct StockViewerApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView(viewModel: viewModel)
         }
         .modelContainer(sharedModelContainer)
     }

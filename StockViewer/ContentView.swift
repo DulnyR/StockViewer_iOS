@@ -9,15 +9,25 @@ import SwiftUI
 import SwiftData
 
 struct ContentView: View {
+    @ObservedObject var viewModel: CryptoViewModel
+    
     var body: some View {
         TabView {
-            HomeView()
+            HomeView(viewModel: viewModel)
                 .tabItem {
                     Label ("Home", systemImage: "house")
                 }
-            ExploreView()
+            ExploreView(viewModel: viewModel)
                 .tabItem {
                     Label ("Explore", systemImage: "magnifyingglass")
+                }
+            AlertView(viewModel: viewModel)
+                .tabItem {
+                    Label ("Alerts", systemImage: "alarm.waves.left.and.right")
+                }
+            SettingsView(viewModel: viewModel)
+                .tabItem {
+                    Label ("Settings", systemImage: "gearshape")
                 }
          }
         .tint(Color.green)
@@ -25,24 +35,42 @@ struct ContentView: View {
 }
 
 struct HomeView: View {
+    @ObservedObject var viewModel: CryptoViewModel
+    
     var body: some View {
         VStack {
             TitleView()
-            CryptoListView()
+            CryptoListView(viewModel: viewModel)
         }
     }
 }
 
 struct ExploreView : View {
+    @ObservedObject var viewModel: CryptoViewModel
+    
     var body: some View {
         VStack {
             TitleView()
-            RecommendedListView()
+            RecommendedListView(viewModel: viewModel)
         }
     }
 }
 
-#Preview {
-    ContentView()
-        .modelContainer(for: CryptoCurrency.self, inMemory: true)
+struct AlertView : View {
+    @ObservedObject var viewModel: CryptoViewModel
+    
+    var body: some View {
+        VStack {
+            TitleView()
+            AlertsView(viewModel: viewModel)
+        }
+    }
+}
+
+struct SettingsView : View {
+    @ObservedObject var viewModel: CryptoViewModel
+    
+    var body: some View {
+        OptionsView(viewModel: viewModel, euro: viewModel.isEuro(), isViewable: viewModel.getViewables())
+    }
 }
